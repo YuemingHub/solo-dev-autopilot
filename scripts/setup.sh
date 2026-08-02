@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 # ============================================
 # Solo Dev Autopilot — 一键安装与环境检测
 # 用法: bash scripts/setup.sh [项目路径]
@@ -179,6 +179,22 @@ install_templates() {
   else
     warn "PROJECT-MEMORY.md 已存在，跳过"
   fi
+
+  # 新手启动指南
+  if [ ! -f "${TARGET_DIR}/ONBOARDING.md" ]; then
+    cp "${REPO_ROOT}/templates/ONBOARDING-template.md" "${TARGET_DIR}/ONBOARDING.md"
+    success "ONBOARDING.md 已创建（新手必读！）"
+  else
+    warn "ONBOARDING.md 已存在，跳过"
+  fi
+
+  # 会话方向盘
+  if [ ! -f "${TARGET_DIR}/SESSION_DRIVER.md" ]; then
+    cp "${REPO_ROOT}/templates/SESSION_DRIVER-template.md" "${TARGET_DIR}/SESSION_DRIVER.md"
+    success "SESSION_DRIVER.md 已创建（每次会话开始时填写）"
+  else
+    warn "SESSION_DRIVER.md 已存在，跳过"
+  fi
 }
 
 # ---- 配置 MCP（交互式）---- 
@@ -317,15 +333,18 @@ print_summary() {
   echo "📁 目标目录: ${TARGET_DIR}"
   echo "🔧 已安装:"
   echo "   ├── skills/          $(find "${TARGET_DIR}/skills" -name '*.md' 2>/dev/null | wc -l | tr -d ' ') 个 Skill"
-  echo "   ├── .gitignore       ✅"
-  echo "   ├── .env.example     ✅"
-  echo "   └── PROJECT-MEMORY.md ✅"
+  echo "   ├── .gitignore        ✅"
+  echo "   ├── .env.example      ✅"
+  echo "   ├── PROJECT-MEMORY.md ✅"
+  echo "   ├── ONBOARDING.md     ✅"
+  echo "   └── SESSION_DRIVER.md ✅"
   echo ""
   echo "🚀 下一步操作:"
-  echo "   1. 编辑 PROJECT-MEMORY.md 填写项目信息"
-  echo "   2. 复制 .env.example 为 .env 并填入实际值"
-  echo "   3. 启动你的 AI 编程工具"
-  echo "   4. 说: '加载 CODEMAP.md' 或 '读取 PROJECT-MEMORY.md'"
+  echo "   1. 阅读 ONBOARDING.md（新手必读！）"
+  echo "   2. 编辑 PROJECT-MEMORY.md 填写项目信息"
+  echo "   3. 复制 .env.example 为 .env 并填入实际值"
+  echo "   4. 启动你的 AI 编程工具"
+  echo "   5. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
   echo ""
   echo "📖 文档:"
   echo "   完整入门指南 → ${REPO_ROOT}/docs/getting-started.md"

@@ -1,4 +1,4 @@
----
+﻿---
 name: commit-helper
 description: >
   分析当前所有改动，自动生成符合 Conventional Commits 规范的提交信息。
@@ -100,6 +100,7 @@ git log --oneline -5
 - 详细描述改动了什么
 - 为什么这样改
 - 有哪些影响
+- 影响模块：<本次改动影响的模块列表>
 
 Closes #<issue-number>
 ```
@@ -165,3 +166,4 @@ Closes #12
 4. **中文项目用中文 commit message**，国际项目用英文。根据项目现有 commit 风格决定
 5. **如果改动太大，建议拆分成多个 commit**：每个 commit 只做一件事
 6. **不要在 commit message 中放敏感信息**：API Key、密码、Token 等
+7. **body 必须包含影响模块**：列出本次改动影响了哪些模块，让新人一眼看懂改了啥
