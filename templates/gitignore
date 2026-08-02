@@ -1,0 +1,96 @@
+# ============================================
+# Solo Dev Autopilot — 最优 .gitignore
+# 覆盖主流技术栈，按需删减不需要的部分
+# ============================================
+
+# --- 依赖 ---
+node_modules/
+.pnpm-store/
+.yarn/cache/
+
+# --- 构建产物 ---
+dist/
+build/
+.next/
+.nuxt/
+out/
+.turbo/
+*.tsbuildinfo
+
+# --- 缓存 ---
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- 环境变量 / 密钥 ---
+.env
+.env.local
+.env.*.local
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account.json
+
+# --- IDE / 编辑器 ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+*.sublime-project
+
+# --- 测试 ---
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# --- 数据库 ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- 系统 ---
+.DS_Store
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# --- 特定工具 ---
+# Supabase
+.supabase/
+
+# Vercel
+.vercel/
+
+# Turborepo
+.turbo/
+
+# Prisma
+prisma/migrations/2024*  # 只保留初始迁移，后续迁移按需提交
+
+# --- 临时文件 ---
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# --- OS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes

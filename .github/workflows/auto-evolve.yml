@@ -1,0 +1,99 @@
+# ============================================
+# Solo Dev Autopilot — 每周自动搜索最优解
+# 每周一 UTC 10:00 运行，搜索 GitHub 上的新工具和配置
+# 如果发现更好的方案，提 PR 通知你审核
+# ============================================
+
+name: 🔍 Auto Evolve — Weekly Optimal Solution Scan
+
+on:
+  schedule:
+    # 每周一上午 10 点 UTC（北京时间 18 点）
+    - cron: '0 10 * * 1'
+  workflow_dispatch: # 支持手动触发
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run evolve script
+        id: evolve
+        run: |
+          chmod +x scripts/auto-evolve.sh
+          bash scripts/auto-evolve.sh --dry-run
+        continue-on-error: true
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [ -f "docs/EVOLVE_CHANGELOG.tmp" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "发现候选变更："
+            cat docs/EVOLVE_CHANGELOG.tmp
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "无需变更"
+          fi
+
+      - name: Create PR if changes found
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: weekly auto-evolve scan results'
+          title: '🔄 Auto-Evolve: 本周最优解扫描结果'
+          body: |
+            ## 📊 Solo Dev Autopilot — 自动进化报告
+            
+            > 由 GitHub Actions 自动生成于 $(date '+%Y-%m-%d')
+            
+            ### 扫描结果
+            
+            以下是本周扫描发现的**候选优化项**。这些不一定是必须更新的，
+            但值得你花几分钟看看是否有价值替换现有方案。
+            
+            <!-- 变更内容将由脚本生成 -->
+            $(cat docs/EVOLVE_CHANGELOG.tmp 2>/dev/null || echo "* 无新发现 *")
+            
+            ### 如何审核
+            
+            1. 查看每个候选项目的 GitHub 仓库
+            2. 对比 Stars 数、活跃度、文档质量
+            3. 如果确实更好，合并此 PR 并更新配置
+            4. 如果不需要，直接关闭此 PR
+            
+            ### 相关文件
+            
+            - `configs/mcp-servers.json` — MCP 服务器配置
+            - `docs/EVOLVE_CHANGELOG.md` — 进化历史记录
+            - `scripts/auto-evolve.sh` — 搜索脚本（可自定义搜索条件）
+            
+            ---
+            
+            💡 **提示**: 你也可以手动运行 `bash scripts/auto-evolve.sh` 进行即时扫描
+          branch: auto-evolve/weekly-$(date '+%Y-W%V')
+          delete-branch: true
+          labels: automation, evolve, review-required
+
+      - name: Summary
+        run: |
+          echo "### 📊 Evolution Scan Result" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+            echo "✅ 发现候选优化项，PR 已创建" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ 所有配置仍是当前最优，无需变更" >> $GITHUB_STEP_SUMMARY
+          fi
