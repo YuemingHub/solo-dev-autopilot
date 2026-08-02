@@ -1,4 +1,4 @@
-# 🚀 详细入门指南 — Solo Dev Autopilot
+﻿# 🚀 详细入门指南 — Solo Dev Autopilot
 
 > 从零到自动驾驶的完整路径。按顺序阅读，每一步都有明确的操作指令。
 
@@ -54,6 +54,20 @@ cd solo-dev-autopilot
 ```
 
 ### Step 2: 一键安装
+
+> **Windows 用户注意**：如果你用的是 Windows，请运行 PowerShell 版本：
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
+> ```
+> 如果你安装了 Git for Windows（自带 Git Bash），也可以运行 bash 版本：
+> ```bash
+> bash scripts/setup.sh
+> ```
+
+```bash
+# macOS / Linux / Git Bash
+bash scripts/setup.sh
+```
 
 ```bash
 # 自动检测环境并配置所有文件
@@ -314,5 +328,5 @@ ln -s /path/to/solo-dev-autopilot/skills ~/.reasonix/skills
 ## 下一步
 
 - 📖 阅读 [新手避坑手册](newbie-pitfalls.md)
-- 🔧 查看 [MCP 配置详解](mcp-guide.md)
+- 🔧 查看 `configs/mcp-servers.json` 了解 MCP 配置
 - 🤝 贡献你的 Skill 到仓库

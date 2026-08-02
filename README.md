@@ -1,4 +1,4 @@
-# 🚀 Solo Dev Autopilot
+﻿# 🚀 Solo Dev Autopilot
 
 > **一个人，一个 AI，一个完整产品。**  
 > 通用 Solo 开发自动驾驶环境 —— Clone、配置一次、永久自动驾驶。
@@ -12,6 +12,9 @@
 | 写完代码不知道对不对 | 自动 P0-P3 分级审查 |
 | 不知道怎么提交/部署 | 一键 commit + 部署前检查 |
 | 不知道怎么排错 | 新手问题自动排查 Skill |
+| 不知道 AI 能帮我什么 | AI 协作指南（能力地图 + 防幻觉） |
+| 想法混乱不会拆任务 | task-planner Skill（目标拆解 + 防漂移） |
+| 会话结束忘了做到哪 | SESSION_DRIVER 自动回顾 + 进度跟踪 |
 | 工具换了要重新配 | 工具无关设计，一套配置通用 |
 
 ## 🎯 适用工具
@@ -33,7 +36,11 @@ git clone https://github.com/YOUR_USERNAME/solo-dev-autopilot.git
 cd solo-dev-autopilot
 
 # 2. 运行一键安装（检测你的环境并自动配置）
+# macOS / Linux / Git Bash:
 bash scripts/setup.sh
+
+# Windows PowerShell:
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 
 # 3. 把这个目录作为你的项目根目录开始开发
 # 或者把 skills/ 和 templates/ 复制到已有项目中
@@ -53,7 +60,8 @@ solo-dev-autopilot/
 │   ├── commit-helper.md               │   智能 Commit 信息生成
 │   ├── deploy-check.md                │   部署前安全检查
 │   ├── troubleshoot.md                │   新手问题自动排查
-│   └── api-designer.md               │   API 接口设计与文档生成
+│   ├── api-designer.md               │   API 接口设计与文档生成
+│   └── task-planner.md               │   目标拆解与防漂移器
 │
 ├── configs/                           ← ⚙️ 各工具的最优预设配置
 │   ├── mcp-servers.json              │   MCP 服务器推荐配置（从后端到前端）
