@@ -195,6 +195,14 @@ install_templates() {
   else
     warn "SESSION_DRIVER.md 已存在，跳过"
   fi
+
+  # AI 协作指南
+  if [ ! -f "${TARGET_DIR}/AI-GUIDE.md" ]; then
+    cp "${REPO_ROOT}/templates/AI-GUIDE-template.md" "${TARGET_DIR}/AI-GUIDE.md"
+    success "AI-GUIDE.md 已创建（新手必读！了解 AI 能做什么、怎么防幻觉）"
+  else
+    warn "AI-GUIDE.md 已存在，跳过"
+  fi
 }
 
 # ---- 配置 MCP（交互式）---- 
@@ -337,14 +345,16 @@ print_summary() {
   echo "   ├── .env.example      ✅"
   echo "   ├── PROJECT-MEMORY.md ✅"
   echo "   ├── ONBOARDING.md     ✅"
+  echo "   ├── AI-GUIDE.md       ✅"
   echo "   └── SESSION_DRIVER.md ✅"
   echo ""
   echo "🚀 下一步操作:"
-  echo "   1. 阅读 ONBOARDING.md（新手必读！）"
-  echo "   2. 编辑 PROJECT-MEMORY.md 填写项目信息"
-  echo "   3. 复制 .env.example 为 .env 并填入实际值"
-  echo "   4. 启动你的 AI 编程工具"
-  echo "   5. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
+  echo "   1. 阅读 AI-GUIDE.md（了解 AI 能做什么、怎么防幻觉）"
+  echo "   2. 阅读 ONBOARDING.md（了解记忆文件和启动咒语）"
+  echo "   3. 编辑 PROJECT-MEMORY.md 填写项目信息"
+  echo "   4. 复制 .env.example 为 .env 并填入实际值"
+  echo "   5. 启动你的 AI 编程工具"
+  echo "   6. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
   echo ""
   echo "📖 文档:"
   echo "   完整入门指南 → ${REPO_ROOT}/docs/getting-started.md"
