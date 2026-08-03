@@ -2,6 +2,38 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.1 — Phase 2 独有层（2026-08-03）
+
+> Phase 2 完成：竞品没有的差异化能力就位。
+
+### 新增
+
+- `.claude/skills/onboarding/SKILL.md` — 首次使用引导：检测/安装 superpowers + 首次对话四步走
+- `.claude/skills/deploy-gate/SKILL.md` — 部署门禁：P0-P3 检查 + CI 检查 + 密钥扫描 + **人工确认红线** + 回滚指南 + 中国部署场景
+- `.claude/plugin/marketplace.json` + `.claude-plugin/marketplace.json` — 插件市场注册（schema 与 obra 官方市场一致）
+- `.claude-plugin/plugin.json` — 仓库本身可作为 Claude Code 插件安装
+
+### 增强
+
+- context-map 增加**记忆裁剪策略**：CODEMAP 分级（P0 完整 / P1 接口签名 / P2 文件名）、PROJECT-MEMORY 2000 字自动摘要、SESSION_DRIVER 保留最近 3 次会话、手动全量刷新指令（100 文件项目 ≤ 2000 行）
+- setup.sh / setup.ps1 — 改为安装官方文件夹式 SKILL.md；新增 superpowers 自动检测与安装引导；其他工具标注"社区适配中"（D4 决策）
+
+### 变更
+
+- deploy-check → **deploy-gate**（改名 + 增强），README/模板/文档引用全部同步
+- 删除被 superpowers 覆盖的 git-workflow skill（using-git-worktrees + finishing-a-development-branch 已覆盖）
+
+### 修复
+
+- setup 脚本原按 v1 平铺 .md 复制到 .claude/skills/（Claude Code 无法识别）→ 改为文件夹式复制
+- setup.sh 中 docs/mcp-guide.md 死链 → 改为 BLUEPRINT-v2.md
+
+### 里程碑验收
+
+- [x] 安装脚本能自动检测并引导安装 superpowers
+- [x] 记忆文件在 100 文件项目下不超过 2000 行（context-map 裁剪策略）
+- [x] deploy-gate 的部署确认不可被跳过（红线规则强制人工确认）
+
 ## 为什么是 v2.0
 
 v1.x 是"新手引导模板"，目标是让 AI 帮你把想法变成能跑的东西。

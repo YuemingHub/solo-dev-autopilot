@@ -46,7 +46,7 @@ AI 很强，但不是万能。以下事情**不要完全依赖 AI**：
 
 ## AI 的能力地图（Skill 速查）
 
-你的项目里装了 8 个 Skill，每个都是一个"专业助手"。你不需要记住它们的名字，只要说"我想做什么"，AI 会自动选对 Skill。
+你的项目里装了 9 个 Skill，每个都是一个"专业助手"。你不需要记住它们的名字，只要说"我想做什么"，AI 会自动选对 Skill。
 
 | 你想做什么 | 触发的 Skill | 说什么 |
 |-----------|-------------|--------|
@@ -55,13 +55,29 @@ AI 很强，但不是万能。以下事情**不要完全依赖 AI**：
 | 了解项目现状 | context-map | "生成代码地图" |
 | 审查代码 | code-review | "review 一下" |
 | 提交代码 | commit-helper | "帮我提交" |
-| 检查能否部署 | deploy-check | "能部署了吗" |
-| 管理分支/合并 | git-workflow | "帮我合并到 main" |
+| 检查能否部署 | deploy-gate | "能部署了吗" |
+| 分支管理/合并 | superpowers git-worktrees | "帮我合并到 main" |
 | 排查错误 | troubleshoot | "报错了：[粘贴错误]" |
 | 设计 API | api-designer | "设计 xxx 的 API" |
 | 恢复上下文 | context-map | "读取 PROJECT-MEMORY.md 和 CODEMAP.md" |
 
 > 💡 你也可以直接说 `/skill <名字>` 来手动触发，比如 `/skill context-map`。
+
+---
+
+## 🧭 superpowers 速览（上游方法论）
+
+你的项目以 [superpowers](https://github.com/obra/superpowers) 为方法论底座（brainstorm → plan → TDD → review → finish）。
+你不需要学习它，AI 会自动调用。你只需要知道：
+
+| 阶段 | 你会看到 AI 做什么 |
+|------|------------------|
+| 开始前 | AI 先问清楚你要做什么，而不是直接写代码（brainstorming） |
+| 动手前 | AI 给出实现计划，分小步执行（writing-plans） |
+| 写代码时 | 先写测试再写代码（test-driven-development） |
+| 完成后 | AI 自查代码质量（requesting-code-review） |
+
+> 如果 AI 没有表现出这些行为，可能是 superpowers 没装好——说"检查一下 superpowers 装了吗"。
 
 ---
 

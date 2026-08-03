@@ -1,0 +1,23 @@
+{
+  "name": "solo-dev-autopilot-marketplace",
+  "owner": {
+    "name": "YuemingHub",
+    "email": "replace-me@example.com"
+  },
+  "metadata": {
+    "description": "中文新手 + 完整交付闭环 + 生产可用：Solo Dev Autopilot 的 Claude Code Skill 集",
+    "version": "2.0.0"
+  },
+  "plugins": [
+    {
+      "name": "solo-dev-autopilot",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/YuemingHub/solo-dev-autopilot.git"
+      },
+      "description": "让第一次用 AI 写代码的中文用户，能交付一个真正能上线、能维护、能排查问题的产品。含 onboarding / task-planner / code-review / deploy-gate / context-map / troubleshoot 等中文新手增强 Skill。",
+      "version": "2.0.0",
+      "strict": true
+    }
+  ]
+}

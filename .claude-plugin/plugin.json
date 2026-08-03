@@ -1,0 +1,12 @@
+{
+  "name": "solo-dev-autopilot",
+  "description": "中文新手 + 完整交付闭环 + 生产可用 的 Solo 开发自动驾驶 Skill 集",
+  "version": "2.0.0",
+  "author": {
+    "name": "YuemingHub"
+  },
+  "license": "MIT",
+  "skills": {
+    "source": "./.claude/skills"
+  }
+}

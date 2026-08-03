@@ -99,8 +99,9 @@ install_skills() {
   info ""
   info "安装 Skill 文件..."
   
-  local skills_src="${REPO_ROOT}/skills"
-  local skills_dest="${TARGET_DIR}/skills"
+  # v2: 官方 SKILL.md 文件夹格式 → .claude/skills/（Claude Code 原生识别）
+  local skills_src="${REPO_ROOT}/.claude/skills"
+  local skills_dest="${TARGET_DIR}/.claude/skills"
   
   if [ ! -d "$skills_src" ]; then
     error "源目录不存在: ${skills_src}"
@@ -108,13 +109,21 @@ install_skills() {
   fi
   
   mkdir -p "$skills_dest"
-  cp -r "${skills_src}"/* "${skills_dest}/"
+  cp -r "${skills_src}/"* "${skills_dest}/"
   
   # 统计复制的 skill 数量
-  local skill_count=$(find "$skills_dest" -name "*.md" | wc -l)
-  success "已复制 ${skill_count} 个 Skill 到 ${skills_dest}/"
+  local skill_count=$(find "$skills_dest" -name "SKILL.md" | wc -l | tr -d ' ')
+  success "已复制 ${skill_count} 个官方格式 Skill 到 ${skills_dest}/"
   
-  # 为各工具创建符号链接或副本
+  # 兼容层：v1 平铺 .md 源文件保留到 skills/（社区工具适配参考，v2 主推 Claude Code）
+  local legacy_src="${REPO_ROOT}/skills"
+  if [ -d "$legacy_src" ]; then
+    mkdir -p "${TARGET_DIR}/skills"
+    cp -r "${legacy_src}/"*.md "${TARGET_DIR}/skills/" 2>/dev/null || true
+    success "已复制 v1 平铺源文件到 ${TARGET_DIR}/skills/（仅作参考）"
+  fi
+  
+  # 为各工具配置 Skill 路径
   setup_tool_skills
 }
 
@@ -122,32 +131,66 @@ setup_tool_skills() {
   info ""
   info "为各工具配置 Skill 路径..."
   
-  # Claude Code: .claude/skills/
-  if [ -d "${TARGET_DIR}/.claude" ] || echo "$AI_TOOL" | grep -q "claude"; then
-    mkdir -p "${TARGET_DIR}/.claude/skills"
-    cp -r "${REPO_ROOT}/skills/"*.md "${TARGET_DIR}/.claude/skills/"
-    success "Claude Code Skill 已配置 → .claude/skills/"
+  # Claude Code: .claude/skills/ 已在上一步完成（官方 SKILL.md 文件夹格式，自动识别）
+  if [ -d "${TARGET_DIR}/.claude/skills" ]; then
+    success "Claude Code 已就绪 → .claude/skills/（官方格式，自动识别）"
   fi
   
-  # Cursor: .cursor/rules/
-  if [ -d "${TARGET_DIR}/.cursor" ] || echo "$AI_TOOL" | grep -q "cursor"; then
-    mkdir -p "${TARGET_DIR}/.cursor/rules"
-    cp -r "${REPO_ROOT}/configs/tool-presets/cursor.json" "${TARGET_DIR}/.cursor/mcp.json" 2>/dev/null || true
-    success "Cursor 配置已准备"
+  # 其他工具：v2 优先 Claude Code 全适配，其余标注"社区适配中"（D4 决策）
+  for tool in cursor reasonix cline; do
+    if [ -d "${TARGET_DIR}/.${tool}" ] || echo "$AI_TOOL" | grep -q "$tool"; then
+      warn "${tool}: 社区适配中（v2 优先 Claude Code），配置文件保留在 configs/tool-presets/"
+    fi
+  done
+}
+
+# ---- superpowers 上游方法论：检测与安装引导 ----
+install_superpowers() {
+  info ""
+  info "检测 superpowers 上游方法论..."
+  info "（superpowers 是我们的方法论底座：brainstorm → plan → TDD → review → finish）"
+  
+  local sp_detected=""
+  if [ -d "${HOME}/.claude/plugins" ]; then
+    if ls "${HOME}/.claude/plugins/installed" 2>/dev/null | grep -qi superpowers; then
+      sp_detected="installed"
+    elif ls "${HOME}/.claude/plugins/marketplaces" 2>/dev/null | grep -qi superpowers; then
+      sp_detected="marketplace"
+    fi
   fi
   
-  # Reasonix: .reasonix/skills/
-  if [ -d "${TARGET_DIR}/.reasonix" ] || echo "$AI_TOOL" | grep -q "reasonix"; then
-    mkdir -p "${TARGET_DIR}/.reasonix/skills"
-    cp -r "${REPO_ROOT}/skills/"*.md "${TARGET_DIR}/.reasonix/skills/"
-    success "Reasonix Skill 已配置 → .reasonix/skills/"
+  if [ -n "$sp_detected" ]; then
+    success "已检测到 superpowers（$sp_detected）✅"
+    return
   fi
   
-  # Cline: .cline/
-  if [ -d "${TARGET_DIR}/.cline" ]; then
-    mkdir -p "${TARGET_DIR}/.cline/skills"
-    cp -r "${REPO_ROOT}/skills/"*.md "${TARGET_DIR}/.cline/skills/"
-    success "Cline Skill 已配置 → .cline/skills/"
+  warn "未检测到 superpowers"
+  info "我们的 Skill 是 superpowers 的中文新手增强层，建议安装："
+  
+  case "$AI_TOOL" in
+    *claude*)
+      info "Claude Code 安装（二选一）："
+      info "  官方市场: /plugin install superpowers@claude-plugins-official"
+      info "  SP 市场:  /plugin marketplace add obra/superpowers-marketplace"
+      info "            /plugin install superpowers@superpowers-marketplace"
+      ;;
+    *cursor*)
+      info "Cursor 安装：在 Agent 对话框输入 /add-plugin superpowers"
+      ;;
+    *)
+      info "其他工具：参考 https://github.com/obra/superpowers 官方安装文档"
+      ;;
+  esac
+  
+  read -rp "是否打开 superpowers 官方文档？(y/n) [默认: n] " open_sp_docs
+  if [[ "${open_sp_docs:-n}" =~ ^[Yy] ]]; then
+    if command -v open >/dev/null 2>&1; then
+      open https://github.com/obra/superpowers
+    elif command -v xdg-open >/dev/null 2>&1; then
+      xdg-open https://github.com/obra/superpowers
+    else
+      info "请手动打开: https://github.com/obra/superpowers"
+    fi
   fi
 }
 
@@ -340,7 +383,8 @@ print_summary() {
   echo ""
   echo "📁 目标目录: ${TARGET_DIR}"
   echo "🔧 已安装:"
-  echo "   ├── skills/          $(find "${TARGET_DIR}/skills" -name '*.md' 2>/dev/null | wc -l | tr -d ' ') 个 Skill"
+  echo "   ├── .claude/skills/  $(find "${TARGET_DIR}/.claude/skills" -name 'SKILL.md' 2>/dev/null | wc -l | tr -d ' ') 个 Skill（官方格式）"
+  echo "   ├── superpowers       已装=$(ls "${HOME}/.claude/plugins/installed" 2>/dev/null | grep -ci superpowers)（0=未装，按引导安装）"
   echo "   ├── .gitignore        ✅"
   echo "   ├── .env.example      ✅"
   echo "   ├── PROJECT-MEMORY.md ✅"
@@ -353,21 +397,23 @@ print_summary() {
   echo "   2. 阅读 ONBOARDING.md（了解记忆文件和启动咒语）"
   echo "   3. 编辑 PROJECT-MEMORY.md 填写项目信息"
   echo "   4. 复制 .env.example 为 .env 并填入实际值"
-  echo "   5. 启动你的 AI 编程工具"
-  echo "   6. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
+  echo "   5. 如未装 superpowers，在 Claude Code 里执行: /plugin install superpowers@claude-plugins-official"
+  echo "   6. 启动你的 AI 编程工具"
+  echo "   7. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
   echo ""
   echo "📖 文档:"
   echo "   完整入门指南 → ${REPO_ROOT}/docs/getting-started.md"
   echo "   新手避坑手册 → ${REPO_ROOT}/docs/newbie-pitfalls.md"
-  echo "   MCP 配置详解 → ${REPO_ROOT}/docs/mcp-guide.md"
+  echo "   v2 开发蓝图   → ${REPO_ROOT}/docs/BLUEPRINT-v2.md"
   echo ""
   echo "💡 常用命令:"
-  echo "   /skill context-map      — 生成/更新代码地图"
-  echo "   /skill fullstack-scaffold — 创建新项目"
-  echo "   /skill code-review      — 代码审查"
-  echo "   /skill commit-helper    — 生成提交信息"
-  echo "   /skill deploy-check     — 部署前检查"
-  echo "   /skill troubleshoot     — 问题排查"
+  echo "   /skill onboarding        — 首次使用引导（装 superpowers）"
+  echo "   /skill context-map       — 生成/更新代码地图"
+  echo "   /skill fullstack-scaffold— 创建新项目"
+  echo "   /skill code-review       — 代码审查"
+  echo "   /skill commit-helper     — 生成提交信息"
+  echo "   /skill deploy-gate       — 部署门禁（人工确认红线）"
+  echo "   /skill troubleshoot      — 问题排查"
   echo ""
 }
 
@@ -382,6 +428,7 @@ main() {
   
   detect_environment
   install_skills
+  install_superpowers
   install_templates
   configure_mcp
   setup_git_hooks

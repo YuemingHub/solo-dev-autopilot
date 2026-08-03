@@ -267,16 +267,16 @@ solo-dev-autopilot/
 
 **目标**：竞品没有的差异化能力就位。
 
-- [ ] onboarding skill（引导装 superpowers + 首次使用）
-- [ ] context-map 增强（记忆裁剪策略）
-- [ ] deploy-gate skill（自动检查 + 人工确认红线）
-- [ ] 更新安装脚本，加入 superpowers 自动安装步骤
-- [ ] 插件市场注册（.claude/plugin/marketplace.json）
+- [x] onboarding skill（引导装 superpowers + 首次使用）
+- [x] context-map 增强（记忆裁剪策略）
+- [x] deploy-gate skill（自动检查 + 人工确认红线）
+- [x] 更新安装脚本，加入 superpowers 自动安装步骤
+- [x] 插件市场注册（.claude/plugin/marketplace.json）
 
 **里程碑验收**：
-- 安装脚本能自动检测并引导安装 superpowers
-- 记忆文件在 100 文件项目下不超过 2000 行
-- deploy-gate 的部署确认不可被跳过
+- [x] 安装脚本能自动检测并引导安装 superpowers
+- [x] 记忆文件在 100 文件项目下不超过 2000 行
+- [x] deploy-gate 的部署确认不可被跳过
 
 ### Phase 3：生产化（3-5 天）
 

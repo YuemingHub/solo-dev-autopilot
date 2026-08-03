@@ -69,16 +69,59 @@ function Install-Skills {
     Info ""
     Info "安装 Skill 文件..."
 
-    $skillsSrc = Join-Path $RepoRoot "skills"
-    $skillsDest = Join-Path $TargetDir "skills"
+    # v2: 官方 SKILL.md 文件夹格式 → .claude/skills/（Claude Code 原生识别）
+    $skillsSrc = Join-Path $RepoRoot ".claude\skills"
+    $skillsDest = Join-Path $TargetDir ".claude\skills"
 
     if (-not (Test-Path $skillsSrc)) { ErrorMsg "源目录不存在: $skillsSrc"; exit 1 }
 
     New-Item -ItemType Directory -Force -Path $skillsDest | Out-Null
     Copy-Item -Path "$skillsSrc\*" -Destination $skillsDest -Recurse -Force
 
-    $skillCount = (Get-ChildItem $skillsDest -Filter "*.md").Count
-    Success "已复制 $skillCount 个 Skill 到 $skillsDest\"
+    $skillCount = (Get-ChildItem $skillsDest -Filter "SKILL.md" -Recurse).Count
+    Success "已复制 $skillCount 个官方格式 Skill 到 $skillsDest\"
+
+    # 兼容层：v1 平铺 .md 源文件保留到 skills/（社区工具适配参考，v2 主推 Claude Code）
+    $legacySrc = Join-Path $RepoRoot "skills"
+    if (Test-Path $legacySrc) {
+        $legacyDest = Join-Path $TargetDir "skills"
+        New-Item -ItemType Directory -Force -Path $legacyDest | Out-Null
+        Copy-Item -Path "$legacySrc\*.md" -Destination $legacyDest -Force
+        Success "已复制 v1 平铺源文件到 $legacyDest\（仅作参考）"
+    }
+}
+
+# ---- superpowers 上游方法论：检测与安装引导 ----
+function Install-Superpowers {
+    Info ""
+    Info "检测 superpowers 上游方法论..."
+    Info "（superpowers 是我们的方法论底座：brainstorm → plan → TDD → review → finish）"
+
+    $spDetected = $false
+    $claudePlugins = Join-Path $env:USERPROFILE ".claude\plugins"
+    if (Test-Path $claudePlugins) {
+        if (Get-ChildItem (Join-Path $claudePlugins "installed") -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "superpowers" }) { $spDetected = $true }
+        if (Get-ChildItem (Join-Path $claudePlugins "marketplaces") -ErrorAction SilentlyContinue | Where-Object { $_.Name -match "superpowers" }) { $spDetected = $true }
+    }
+
+    if ($spDetected) {
+        Success "已检测到 superpowers ✅"
+        return
+    }
+
+    Warn "未检测到 superpowers"
+    Info "我们的 Skill 是 superpowers 的中文新手增强层，建议安装："
+
+    if (Get-Command claude -ErrorAction SilentlyContinue) {
+        Info "Claude Code 安装（二选一）："
+        Info "  官方市场: /plugin install superpowers@claude-plugins-official"
+        Info "  SP 市场:  /plugin marketplace add obra/superpowers-marketplace"
+        Info "            /plugin install superpowers@superpowers-marketplace"
+    } elseif (Test-Path "$env:USERPROFILE\.cursor") {
+        Info "Cursor 安装：在 Agent 对话框输入 /add-plugin superpowers"
+    } else {
+        Info "其他工具：参考 https://github.com/obra/superpowers 官方安装文档"
+    }
 }
 
 # ---- 安装模板文件 ----
@@ -155,7 +198,7 @@ function Print-Summary {
     Write-Host ""
     Write-Host " 目标目录: $TargetDir"
     Write-Host " 已安装:"
-    Write-Host "   ├── skills/          $((Get-ChildItem (Join-Path $TargetDir 'skills') -Filter '*.md' -ErrorAction SilentlyContinue).Count) 个 Skill"
+    Write-Host "   ├── .claude/skills/    $((Get-ChildItem (Join-Path $TargetDir '.claude\skills') -Filter 'SKILL.md' -Recurse -ErrorAction SilentlyContinue).Count) 个 Skill（官方格式）"
     Write-Host "   ├── .gitignore       OK"
     Write-Host "   ├── .env.example     OK"
     Write-Host "   ├── PROJECT-MEMORY.md OK"
@@ -168,17 +211,19 @@ function Print-Summary {
     Write-Host "   2. 阅读 ONBOARDING.md（了解记忆文件和启动咒语）"
     Write-Host "   3. 编辑 PROJECT-MEMORY.md 填写项目信息"
     Write-Host "   4. 复制 .env.example 为 .env 并填入实际值"
-    Write-Host "   5. 启动你的 AI 编程工具"
-    Write-Host "   6. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
+    Write-Host "   5. 如未装 superpowers，在 Claude Code 里执行: /plugin install superpowers@claude-plugins-official"
+    Write-Host "   6. 启动你的 AI 编程工具"
+    Write-Host "   7. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
     Write-Host ""
     Write-Host " 常用命令:"
-    Write-Host "   /skill task-planner     — 拆解任务、设定目标"
-    Write-Host "   /skill context-map      — 生成/更新代码地图"
-    Write-Host "   /skill fullstack-scaffold — 创建新项目"
-    Write-Host "   /skill code-review      — 代码审查"
-    Write-Host "   /skill commit-helper    — 生成提交信息"
-    Write-Host "   /skill deploy-check     — 部署前检查"
-    Write-Host "   /skill troubleshoot     — 问题排查"
+    Write-Host "   /skill onboarding        — 首次使用引导（装 superpowers）"
+    Write-Host "   /skill task-planner      — 拆解任务、设定目标"
+    Write-Host "   /skill context-map       — 生成/更新代码地图"
+    Write-Host "   /skill fullstack-scaffold— 创建新项目"
+    Write-Host "   /skill code-review       — 代码审查"
+    Write-Host "   /skill commit-helper     — 生成提交信息"
+    Write-Host "   /skill deploy-gate       — 部署门禁（人工确认红线）"
+    Write-Host "   /skill troubleshoot      — 问题排查"
     Write-Host ""
 }
 
@@ -192,6 +237,7 @@ Write-Host ""
 
 Detect-Environment
 Install-Skills
+Install-Superpowers
 Install-Templates
 Init-Git
 Print-Summary

@@ -22,10 +22,11 @@ B. 继续开发一个已有项目（这个仓库或其他项目）
 - context-map：生成项目代码地图，恢复上下文
 - code-review：提交前代码审查（P0-P3 分级）
 - commit-helper：生成规范提交信息
-- deploy-check：部署前安全检查
+- deploy-gate：部署门禁（检查 + 人工确认红线，生产部署不可跳过）
 - troubleshoot：新手报错自动排查
 - fullstack-scaffold：一键生成全栈项目骨架
-- git-workflow：分支管理、合并、冲突处理
+- onboarding：首次使用引导（含 superpowers 安装）
+- superpowers（上游底座）：brainstorm→plan→TDD→review→finish，由 AI 自动调用
 
 开始吧，先问我第一个问题。
 ```

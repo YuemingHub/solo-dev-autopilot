@@ -252,7 +252,7 @@ reasonix code
 | 了解项目现状 | "生成代码地图" | context-map |
 | 审查代码 | "review 一下" | code-review |
 | 提交代码 | "帮我提交" | commit-helper |
-| 能否部署 | "能部署了吗" | deploy-check |
+| 能否部署 | "能部署了吗" | deploy-gate |
 | 排查错误 | "报错了：[粘贴错误]" | troubleshoot |
 | 设计接口 | "设计 xxx 的 API" | api-designer |
 | 记住偏好 | "记住我们用 pnpm" | 内置 memory |

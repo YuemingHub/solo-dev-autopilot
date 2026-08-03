@@ -311,7 +311,7 @@ cat .env | grep DATABASE
 # Ctrl+C 然后 pnpm dev
 ```
 
-**预防**：使用 deploy-check skill 在每次部署前检查环境变量完整性。
+**预防**：使用 deploy-gate skill 在每次部署前检查环境变量完整性。
 
 ---
 
@@ -392,7 +392,7 @@ pnpm install --frozen-lockfile
 # 3. 检查 import 路径的大小写
 ```
 
-**预防**：deploy-check skill 会在部署前检查这些问题。
+**预防**：deploy-gate skill 会在部署前检查这些问题。
 
 ---
 
@@ -780,9 +780,9 @@ MVP 原则：
 **原因**：不知道部署前有检查清单
 
 **解决**：
-对 AI 说"能部署了吗"，deploy-check skill 会自动检查所有关键项。
+对 AI 说"能部署了吗"，deploy-gate skill 会自动检查所有关键项。
 
-**预防**：每次部署前必跑 deploy-check
+**预防**：每次部署前必跑 deploy-gate
 
 ---
 

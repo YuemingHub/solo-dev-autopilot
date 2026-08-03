@@ -19,14 +19,16 @@
 
 ## 🎯 适用工具
 
-本仓库**不绑定任何特定工具**，只要支持 MCP + Skill 的环境都能用：
+v2 优先 **Claude Code 全适配**（官方 SKILL.md + 插件市场原生支持），其他工具标注"社区适配中"：
 
-- **Claude Code** (`.claude/skills/`)
-- **Cursor** (`.cursor/rules/`)
-- **Cline** (`.cline/`)
-- **Reasonix** (`.reasonix/skills/`)
-- **Windsurf** (`.windsurf/rules/`)
+- **Claude Code** ✅ 全适配 (`.claude/skills/` + 插件市场注册)
+- **Cursor** 🟡 社区适配中 (`.cursor/rules/`)
+- **Cline** 🟡 社区适配中 (`.cline/`)
+- **Reasonix** 🟡 社区适配中 (`.reasonix/skills/`)
+- **Windsurf** 🟡 社区适配中 (`.windsurf/rules/`)
 - **任何支持 MCP 协议的 IDE / 本地工作台**
+
+> 与 superpowers 的关系：**硬依赖 + 中文增强层**——superpowers 是方法论底座（brainstorm → plan → TDD → review → finish），我们的 Skill 是它的中文新手场景适配层。安装引导见 `onboarding` Skill 和 `scripts/setup.sh`。
 
 ## ⚡ 三步开始
 
@@ -35,16 +37,24 @@
 git clone https://github.com/YOUR_USERNAME/solo-dev-autopilot.git
 cd solo-dev-autopilot
 
-# 2. 运行一键安装（检测你的环境并自动配置）
+# 2. 运行一键安装（检测环境、安装 Skill、引导安装 superpowers）
 # macOS / Linux / Git Bash:
 bash scripts/setup.sh
 
 # Windows PowerShell:
 powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 
-# 3. 把这个目录作为你的项目根目录开始开发
-# 或者把 skills/ 和 templates/ 复制到已有项目中
+# 3. 在 Claude Code 里安装上游方法论（脚本会引导你，或手动执行）：
+#    /plugin install superpowers@claude-plugins-official
+
+# 4. 把这个目录作为你的项目根目录开始开发
+# 或者把 .claude/skills/ 和 templates/ 复制到已有项目中
 ```
+
+> 🔗 **依赖声明**：本仓库站在三个开源项目之上，不重复造轮子——
+> [anthropics/skills](https://github.com/anthropics/skills)（官方 SKILL.md 标准）、
+> [obra/superpowers](https://github.com/obra/superpowers)（开发方法论底座）、
+> [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)（MCP 服务器清单）。
 
 ## 📂 仓库结构
 
@@ -57,14 +67,15 @@ solo-dev-autopilot/
 │
 ├── .claude/                           ← 🧠 Claude Code 原生适配（v2 新增）
 │   ├── settings.json                  │   三级权限模型（auto-allow / ask / deny）
+│   ├── plugin/marketplace.json        │   插件市场注册（v2 新增）
 │   └── skills/                        │   官方 SKILL.md 格式技能（Claude Code 自动识别）
 │       ├── api-designer/SKILL.md      │   API 接口设计
 │       ├── code-review/SKILL.md       │   P0-P3 分级代码审查
 │       ├── commit-helper/SKILL.md     │   智能 Commit 信息
 │       ├── context-map/SKILL.md       │   代码地图（会话恢复核心）
-│       ├── deploy-check/SKILL.md      │   部署前安全检查
+│       ├── deploy-gate/SKILL.md       │   部署门禁（人工确认红线）
 │       ├── fullstack-scaffold/SKILL.md│   全栈脚手架生成
-│       ├── git-workflow/SKILL.md      │   Git 工作流引导
+│       ├── onboarding/SKILL.md        │   首次使用引导（装 superpowers）
 │       ├── task-planner/SKILL.md      │   目标拆解与防漂移
 │       └── troubleshoot/SKILL.md      │   新手问题排查
 │
@@ -104,6 +115,8 @@ solo-dev-autopilot/
     └── auto-evolve.yml               │   每周自动搜索社区方案
 ```
 ## 🔧 核心 Skill 说明
+
+> 💡 第一次用？先让 AI 触发 `onboarding`（或说"怎么开始"），它会引导你安装 superpowers 并完成首次设置。
 
 ### 1️⃣ context-map — 代码地图（最重要）
 
@@ -148,7 +161,8 @@ solo-dev-autopilot/
 | Skill | 用途 | 触发方式 |
 |-------|------|---------|
 | commit-helper | 分析改动生成 Conventional Commits | `/skill commit-helper` |
-| deploy-check | 部署前检查环境变量、依赖、构建 | `/skill deploy-check` |
+| onboarding | 首次使用引导（装 superpowers） | `/skill onboarding` |
+| deploy-gate | 部署门禁：检查 + 人工确认红线 | `/skill deploy-gate` |
 | troubleshoot | 根据错误信息自动排查原因 | `/skill troubleshoot <错误信息>` |
 | api-designer | 设计 API 接口并生成文档 | `/skill api-designer` |
 
@@ -202,7 +216,7 @@ solo-dev-autopilot/
 - ✅ **编辑门控**：默认 auto 模式（5秒撤销窗口），防止误操作
 - ✅ **权限白名单**：只允许安全的 shell 命令，危险操作需要确认
 - ✅ **自动格式化**：每次保存文件后自动 format/lint
-- ✅ **部署检查**：部署前自动检查环境变量、依赖完整性、构建状态
+- ✅ **部署门禁**：部署前自动检查（环境变量/依赖/构建/CI/密钥扫描）+ **人工确认红线**（生产部署不可自动跳过）
 - ✅ **常见问题库**：`troubleshoot.md` 覆盖 50+ 新手高频问题
 
 ## 📊 设计原则
