@@ -2,6 +2,32 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.3.2 — CI 模板端到端验证修复（2026-08-03）
+
+> 用真实 Node 项目把 templates/ci-node.yml 整条流水线跑了一遍，发现并修复 3 个模板缺陷。
+> 验证过程与证据见 `docs/verification.md`。
+
+### 修复
+
+1. **覆盖率门失效**：`--reporter=json` 是 vitest 测试结果 reporter，不输出 JSON 到 stdout，
+   grep `"lines"` 落空导致门静默失效 → 改用 `--coverage.reporter=json-summary`
+   生成 coverage/coverage-summary.json，node 一行提取 `s.total.lines.pct` 判断 ≥80%
+2. **审计形同虚设**：`pnpm audit --audit-level=high || true` 让高危漏洞不阻止 CI →
+   去掉豁免，高危真实阻止；确认为可接受风险时显式加回（注释说明）
+3. **密钥扫描漏报**：值部分 `[A-Za-z0-9]{16,}` 匹配不了 `sk-` 带连字符格式 →
+   改 `[^'"[:space:]]{16,}` + `access[_-]?key` 备选（覆盖 aws_secret_access_key 模式），
+   6 案例两向测试全过
+
+### 新增
+
+- `docs/verification.md` — 验证记录：配置自检 / hooks 实测 / CI 真实运行 / 模板端到端 / 一致性检查，全部可复现
+
+### 验证
+
+- 最小 vitest 项目：3 tests passed，覆盖率 100% ≥ 80% 门 ✅
+- tsc lint/build 通过 ✅；pnpm audit 正常报告（vitest 2.1.9 critical 漏洞被正确标出）✅
+- 密钥扫描 6/6 两向正确（sk-/AKIA 命中，env 引用/短值/模板串不误报）✅
+
 ## v2.3.1 — CI 自检修复（2026-08-03）
 
 > 修复：本仓库的 CI 不能跑 Node 模板（仓库本身没有 package.json）。

@@ -49,13 +49,14 @@ jobs:
         run: pnpm lint
 
       - name: Test (with coverage)
-        run: pnpm vitest run --coverage
+        run: pnpm vitest run --coverage --coverage.reporter=text --coverage.reporter=json-summary
 
       # 覆盖率门槛：低于 80% 直接失败（蓝图 7.1 基线）
+      # ⚠️ 不要用 --reporter=json（那是测试结果 reporter，不输出 JSON 到 stdout）。
+      # 覆盖率数据由 --coverage.reporter=json-summary 生成到 coverage/coverage-summary.json。
       - name: Coverage gate (>= 80%)
         run: |
-          COVERAGE=$(pnpm vitest run --coverage --reporter=json 2>/dev/null | \
-            grep -o '"lines":[^,]*' | head -1 | grep -o '[0-9.]*')
+          COVERAGE=$(node -e "const s=require('./coverage/coverage-summary.json'); console.log(s.total.lines.pct)")
           echo "Line coverage: ${COVERAGE}%"
           if (( $(echo "${COVERAGE} < 80" | bc -l) )); then
             echo "::error::Coverage ${COVERAGE}% is below 80% gate"
@@ -65,14 +66,17 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # 依赖审计：只拦高危以上（npm audit 默认输出 full，-audit-level 控制门槛）
+      # 依赖审计：高危及以上漏洞阻止 CI（质量门，蓝图 7.2）
+      # 确认为可接受风险时，显式豁免：pnpm audit --audit-level=high || true
       - name: Dependency audit
-        run: pnpm audit --audit-level=high || true
+        run: pnpm audit --audit-level=high
 
       # 密钥扫描：检测本次变更是否混入密钥
+      # ⚠️ 值部分用 [^'"[:space:]]{16,}（非引号非空白），兼容 sk-xxx / AKIA 等带连字符格式；
+      #    [A-Za-z0-9]{16,} 会漏掉 sk- 这种常见格式。
       - name: Secret scan
         run: |
-          git diff HEAD | grep -iE "(api[_-]?key|secret|password|token)[[:space:]]*[:=][[:space:]]*['\"][A-Za-z0-9]{16,}" && \
+          git diff HEAD | grep -iE "(api[_-]?key|secret|password|token|access[_-]?key)[[:space:]]*[:=][[:space:]]*['\"][^'\"[:space:]]{16,}" && \
             { echo "::error::Hardcoded secret detected"; exit 1; } || true
 
       - name: Summary

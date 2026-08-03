@@ -151,6 +151,7 @@ solo-dev-autopilot/
 │   ├── getting-started.md            │   详细入门指南（三步开始）
 │   ├── tool-setup.md                 │   各 AI 工具安装引导（v2.3 新增）
 │   ├── scoring.md                    │   评分维度表 8 维加权（v2.3 新增）
+│   ├── verification.md              │   验证记录：所有实测证据可复现（v2.3.2 新增）
 │   ├── newbie-pitfalls.md            │   新手避坑手册
 │   ├── production-checklist.md       │   生产上线清单（v2.1 新增）
 │   └── autopilot-boundaries.md       │   AI 边界原则（v2.1 新增）
