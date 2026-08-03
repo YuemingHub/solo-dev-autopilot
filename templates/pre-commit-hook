@@ -1,6 +1,6 @@
-?#!/usr/bin/env bash
-# Solo Dev Autopilot - pre-commit P0 ??
-# ??????(<5?),?? P0 ??????
+#!/usr/bin/env bash
+# Solo Dev Autopilot — pre-commit P0 检查
+# 只做快速检查（<5秒），发现 P0 问题阻止提交
 
 set -e
 
@@ -17,45 +17,45 @@ if [ -z "$staged_files" ]; then
   exit 0
 fi
 
-echo -e "${YELLOW}[pre-commit]${NC} ?? P0 ??..."
+echo -e "${YELLOW}[pre-commit]${NC} 运行 P0 检查..."
 
-# ??1:?????
+# 检查1：硬编码密钥
 for file in $staged_files; do
   if git diff --cached -- "$file" | grep -iE "(password|secret|api_key|apikey|token)\s*[:=]\s*[\"'][^\"']{8,}" 2>/dev/null; then
-    echo -e "${RED}[P0] ???????????:${file}${NC}"
+    echo -e "${RED}[P0] 检测到可能的硬编码密钥：${file}${NC}"
     errors=$((errors + 1))
   fi
 done
 
-# ??2:? catch ?
+# 检查2：空 catch 块
 for file in $staged_files; do
   if git diff --cached -- "$file" | grep -E "^\+.*catch\s*\([^)]*\)\s*\{\s*\}" 2>/dev/null; then
-    echo -e "${RED}[P0] ???? catch ?:${file}${NC}"
+    echo -e "${RED}[P0] 检测到空 catch 块：${file}${NC}"
     errors=$((errors + 1))
   fi
 done
 
-# ??3:? any ??(TS/JS)
+# 检查3：裸 any 类型（TS/JS）
 for file in $staged_files; do
   if echo "$file" | grep -qE "\.(ts|tsx)$"; then
     if git diff --cached -- "$file" | grep -E "^\+.*:\s*any\b" 2>/dev/null; then
-      echo -e "${YELLOW}[P0] ??? any ??:${file}(??? unknown ?????)${NC}"
+      echo -e "${YELLOW}[P0] 检测到 any 类型：${file}（建议用 unknown 或具体类型）${NC}"
       errors=$((errors + 1))
     fi
   fi
 done
 
-# ??4:.env ???
+# 检查4：.env 被暂存
 if git diff --cached --name-only | grep -qE "^\.env$"; then
-  echo -e "${RED}[P0] .env ??????!??? .gitignore${NC}"
+  echo -e "${RED}[P0] .env 文件被暂存了！请加入 .gitignore${NC}"
   errors=$((errors + 1))
 fi
 
 if [ "$errors" -gt 0 ]; then
-  echo -e "${RED}[pre-commit] ?? ${errors} ? P0 ??,??????${NC}"
-  echo -e "${YELLOW}???????:git add <??> && git commit${NC}"
+  echo -e "${RED}[pre-commit] 发现 ${errors} 个 P0 问题，提交已阻止。${NC}"
+  echo -e "${YELLOW}修复后重新提交：git add <文件> && git commit${NC}"
   exit 1
 fi
 
-echo -e "${GREEN}[pre-commit] P0 ????${NC}"
+echo -e "${GREEN}[pre-commit] P0 检查通过${NC}"
 exit 0

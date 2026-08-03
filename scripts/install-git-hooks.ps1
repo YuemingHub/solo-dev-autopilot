@@ -1,5 +1,5 @@
-?# Solo Dev Autopilot - ?? Git Hooks (PowerShell)
-# ??:powershell -ExecutionPolicy Bypass -File scripts\install-git-hooks.ps1
+# Solo Dev Autopilot — 安装 Git Hooks (PowerShell)
+# 用法：powershell -ExecutionPolicy Bypass -File scripts\install-git-hooks.ps1
 
 $ErrorActionPreference = "Stop"
 
@@ -14,24 +14,24 @@ function Warn($msg)    { Write-Host "[git-hooks] $msg" -ForegroundColor Yellow }
 function ErrorMsg($msg){ Write-Host "[git-hooks] $msg" -ForegroundColor Red }
 
 if (-not (Test-Path $HooksDir)) {
-    ErrorMsg "?????? Git ??(??? .git\hooks\)"
+    ErrorMsg "当前目录不是 Git 仓库（找不到 .git\hooks\）"
     exit 1
 }
 
-Info "?? pre-commit hook..."
+Info "安装 pre-commit hook..."
 Copy-Item (Join-Path $TemplatesDir "pre-commit-hook") (Join-Path $HooksDir "pre-commit") -Force
-Success "pre-commit hook ???"
+Success "pre-commit hook 已安装"
 
-Info "?? pre-push hook..."
+Info "安装 pre-push hook..."
 Copy-Item (Join-Path $TemplatesDir "pre-push-hook") (Join-Path $HooksDir "pre-push") -Force
-Success "pre-push hook ???"
+Success "pre-push hook 已安装"
 
 Write-Host ""
 Write-Host "=========================================" -ForegroundColor Green
-Write-Host " Git Hooks ????!" -ForegroundColor Green
+Write-Host " Git Hooks 安装完成！" -ForegroundColor Green
 Write-Host "=========================================" -ForegroundColor Green
-Write-Host " ???:"
-Write-Host "   ??? pre-commit  ? ??? P0 ??"
-Write-Host "   ??? pre-push    ? ???????"
+Write-Host " 已安装："
+Write-Host "   ├── pre-commit  → 提交前 P0 检查"
+Write-Host "   └── pre-push    → 推送前审查提醒"
 Write-Host ""
-Write-Host " ??:Git Hooks ??? git ??,?????????" -ForegroundColor Yellow
+Write-Host " 提示：Git Hooks 不会被 git 跟踪，换电脑后需重新安装" -ForegroundColor Yellow
