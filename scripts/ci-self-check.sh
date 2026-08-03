@@ -67,12 +67,14 @@ for dir in .claude/skills/*/; do
 done
 [ "$skill_count" -gt 0 ] || bad "未发现任何 skill（.claude/skills/ 为空？）"
 
-echo "=== 3. Shell 语法（strip BOM 后 sh -n） ==="
+echo "=== 3. Shell 语法（strip BOM 后 bash -n） ==="
+# 注意：统一用 bash -n（不是 sh -n）——setup.sh/post-session.sh 是 bash 脚本，
+# Ubuntu 的 sh 是 dash，解析 `[[` 等 bash 语法会误报。bash 能解析 POSIX sh 子集。
 for f in scripts/*.sh templates/pre-commit-hook templates/pre-push-hook; do
   [ -f "$f" ] || continue
   tmp=$(mktemp 2>/dev/null || echo "/tmp/sdap-check.$$")
   sed '1s/^\xEF\xBB\xBF//' "$f" > "$tmp"
-  if sh -n "$tmp" 2>/dev/null; then
+  if bash -n "$tmp" 2>/dev/null; then
     ok "SH: $f"
   else
     bad "SH 语法错误: $f"
