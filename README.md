@@ -56,6 +56,41 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 > [obra/superpowers](https://github.com/obra/superpowers)（开发方法论底座）、
 > [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)（MCP 服务器清单）。
 
+## 🏗️ 架构图
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                          你的项目 (Your Project)                     │
+│   CODEMAP.md · PROJECT-MEMORY.md · SESSION_DRIVER.md · .env.example   │
+│   pre-commit / pre-push hooks · CI · 部署目标                        │
+└───────────────┬──────────────────────────────────┬──────────────────┘
+                │ 注入上下文（记忆/代码地图）        │ 自动化执行（质量门）
+┌───────────────▼──────────────────┐   ┌───────────▼──────────────────┐
+│      AI 编程工具（任选其一）       │   │     Git Hooks + CI           │
+│  Claude Code · Cursor · Cline    │   │  pre-commit：P0 阻止提交      │
+│  Reasonix · Windsurf · 其他      │   │  pre-push：推送前审查提醒     │
+└───────────────┬──────────────────┘   │  GitHub Actions：lint→test    │
+                │ 读取                    │  →build→审计→密钥扫描        │
+                │                       └──────────────────────────────┘
+┌───────────────▼─────────────────────────────────────────────────────┐
+│              🦐 Solo Dev Autopilot 配置层（本仓库）                   │
+│  ├─ 13 个 SKILL.md —— 中文新手场景增强（官方格式）                    │
+│  ├─ configs/permissions.json —— 三级危险度权限模型（唯一事实源）       │
+│  ├─ configs/modes/ —— toy / team / production 三档配置               │
+│  ├─ configs/tool-presets/ —— 各工具适配（Claude 全适配，其他社区适配）│
+│  └─ configs/mcp-servers.json —— MCP 服务器推荐                       │
+└───────────────┬─────────────────────────────────────────────────────┘
+                │ 基于（不重复造轮子）
+┌───────────────▼─────────────────────────────────────────────────────┐
+│                           上游开源底座                                │
+│  anthropics/skills（SKILL.md 标准）· obra/superpowers（开发方法论）    │
+│  punkpeye/awesome-mcp-servers（MCP 清单）                             │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**读法**：你的项目在最上层（产物），AI 工具在中间（执行者），本仓库是配置层（规则与技能），
+最下面是上游底座（我们不重造的部分）。Solo 开发者只需关心最上层——其余由 autopilot 自动推进。
+
 ## 📂 仓库结构
 
 ```
@@ -113,7 +148,9 @@ solo-dev-autopilot/
 │
 ├── docs/                              ← 📚 文档
 │   ├── BLUEPRINT-v2.md               │   v2 开发蓝图（14 章 + 附录）
-│   ├── getting-started.md            │   详细入门指南
+│   ├── getting-started.md            │   详细入门指南（三步开始）
+│   ├── tool-setup.md                 │   各 AI 工具安装引导（v2.3 新增）
+│   ├── scoring.md                    │   评分维度表 8 维加权（v2.3 新增）
 │   ├── newbie-pitfalls.md            │   新手避坑手册
 │   ├── production-checklist.md       │   生产上线清单（v2.1 新增）
 │   └── autopilot-boundaries.md       │   AI 边界原则（v2.1 新增）

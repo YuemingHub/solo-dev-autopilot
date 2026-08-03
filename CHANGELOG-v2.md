@@ -2,6 +2,29 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.3 — Phase 4 文档与评分（2026-08-03）
+
+> Phase 4 完成：评分 9 分有理有据。
+
+### 新增
+
+- README **架构图**（四层：你的项目 → AI 工具 → Autopilot 配置层 → 上游底座）
+- `docs/tool-setup.md` — 各 AI 工具安装引导（Claude Code 全适配 + Cursor/Cline/Reasonix/Windsurf 社区适配步骤 + 迁移已有项目）
+- `docs/scoring.md` — **评分维度表**：8 维加权，逐维度附实物证据链，加权总分 9.0 的计算路径
+
+### 增强
+
+- `docs/getting-started.md` — 补「三步开始」总览；修复 v1 残留（平铺 `skills/*.md` → 文件夹式 `.claude/skills/`；自定义 Skill 改官方 SKILL.md 格式；多项目软链指向修正）
+- `BOOTSTRAP-PROMPT.md` — `skills/` → `.claude/skills/` 引用修正
+- README 文档区挂载 tool-setup.md / scoring.md
+
+### 里程碑验收
+
+- [x] README 定位声明 + 依赖说明 + 架构图
+- [x] 各工具安装引导文档（tool-setup.md 覆盖 5 工具）
+- [x] 评分维度表发布（scoring.md，证据链可追溯）
+- [x] 「三步开始」完整流程（README 简版 + getting-started 详版）
+
 ## v2.2 — Phase 3 生产化（2026-08-03）
 
 > Phase 3 完成：生产可用配置包就位。

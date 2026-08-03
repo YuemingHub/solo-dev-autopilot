@@ -2,6 +2,25 @@
 
 > 从零到自动驾驶的完整路径。按顺序阅读，每一步都有明确的操作指令。
 
+## ⚡ 三步开始（30 秒看完）
+
+```bash
+# ① 克隆 + 一键安装（选配置模式：toy/team/production）
+bash scripts/setup.sh          # macOS/Linux/Git Bash
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1   # Windows
+
+# ② 在 Claude Code 里装方法论底座
+/plugin install superpowers@claude-plugins-official
+
+# ③ 开始开发（AI 自动加载记忆 + 代码地图）
+claude
+# 第一句话：读取 PROJECT-MEMORY.md 和 CODEMAP.md，帮我生成代码地图
+```
+
+> 三步的含义：**① 装好环境** → **② 接上方法论** → **③ 交给 autopilot**。
+> 之后的日常开发（写代码→测试→审查→提交→部署检查）全部由 13 个 Skill 自动推进，
+> 你只需在关键节点（合并、部署）做人工确认。
+
 ## 目录
 
 1. [前置要求](#1-前置要求)
@@ -87,26 +106,22 @@ bash scripts/setup.sh
 
 如果 `setup.sh` 因环境问题无法运行，手动执行以下操作：
 
-#### 3a. 复制 Skill 文件
+#### 3a. 复制 Skill 文件（官方文件夹式 SKILL.md）
 
 ```bash
-# 复制到你项目的根目录
-cp -r skills/* your-project/skills/
-
-# 根据你使用的工具，复制到对应位置：
-
-# Claude Code
+# 复制到目标项目的 .claude/skills/（Claude Code 原生识别）
 mkdir -p your-project/.claude/skills/
-cp skills/*.md your-project/.claude/skills/
+cp -r .claude/skills/* your-project/.claude/skills/
 
-# Reasonix
-mkdir -p your-project/.reasonix/skills/
-cp skills/*.md your-project/.reasonix/skills/
-
-# Cline
-mkdir -p your-project/.cline/skills/
-cp skills/*.md your-project/.cline/skills/
+# 其他工具（社区适配）：见 docs/tool-setup.md 对应小节
+# Cursor  → .cursor/rules/（需手动转换）
+# Cline   → .clinerules/
+# Reasonix → ~/.reasonix/skills/
+# Windsurf → .windsurf/rules/
 ```
+
+> ⚠️ v1 的平铺 `skills/*.md` 已废弃——Claude Code 只认
+> `.claude/skills/<name>/SKILL.md` 文件夹格式。
 
 #### 3b. 复制模板文件
 
@@ -261,16 +276,17 @@ reasonix code
 
 ## 6. 进阶配置
 
-### 6.1 自定义 Skill
+### 6.1 自定义 Skill（官方 SKILL.md 格式）
 
-在 `skills/` 目录下创建新的 `.md` 文件即可：
+在 `.claude/skills/` 下新建文件夹 + SKILL.md（Claude Code 自动识别）：
 
 ```markdown
 ---
 name: my-custom-skill
-description: 我的自定义技能
-runAs: subagent
-tools: [read_file, write_file]
+description: >
+  我的自定义技能：一句话描述用途 + 触发时机。
+  当用户说"xxx"时触发。
+license: MIT
 ---
 
 # My Custom Skill
@@ -282,7 +298,15 @@ tools: [read_file, write_file]
 ...
 ```
 
-然后在对话中调用：`/skill my-custom-skill`
+```bash
+# 文件位置：
+# .claude/skills/my-custom-skill/SKILL.md
+```
+
+然后在对话中触发：`/skill my-custom-skill` 或说触发词。
+
+> ⚠️ 官方格式只有 name / description / license 三个字段（无 runAs/tools 等 v1 字段）。
+> description 写清楚触发词，AI 才能自动识别何时调用。
 
 ### 6.2 添加更多 MCP Server
 
@@ -318,9 +342,8 @@ bash scripts/auto-evolve.sh --dry-run # 仅查看不修改
 cd project-a && bash /path/to/solo-dev-autopilot/scripts/setup.sh
 cd project-b && bash /path/to/solo-dev-autopilot/scripts/setup.sh
 
-# 方案 B：全局共享 Skill（推荐）
-ln -s /path/to/solo-dev-autopilot/skills ~/.claude/skills
-ln -s /path/to/solo-dev-autopilot/skills ~/.reasonix/skills
+# 方案 B：全局共享 Skill（推荐，软链到 Claude Code 用户目录）
+ln -s /path/to/solo-dev-autopilot/.claude/skills ~/.claude/skills
 ```
 
 ---
