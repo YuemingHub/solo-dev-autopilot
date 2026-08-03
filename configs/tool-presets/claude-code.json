@@ -1,1 +1,136 @@
-{"_comment": "Claude Code 适配配置", "_usage": "将此内容合并到 ~/.claude/settings.json 或项目的 .claude/settings.json", "permissions": {"allow": ["Bash(npm:*)", "Bash(pnpm:*)", "Bash(bun:*)", "Bash(git:*)", "Bash(cat:*)", "Bash(ls:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)", "Bash(find:*)", "Read", "Write", "Edit"], "deny": ["Bash(rm -rf /)", "Bash(sudo:*)"]}, "mcpServers": {"github": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-github"], "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"}}, "postgres": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-postgres"], "env": {"POSTGRES_CONNECTION_STRING": "${DATABASE_URL}"}}, "filesystem": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "${PROJECT_ROOT}"]}, "sequential-thinking": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]}}, "skillsPath": ".claude/skills", "postCommands": [{"command": "echo 'Session ended. Running post-session hooks...'", "description": "Post-session notification"}]}
+{
+    "_comment":  "Claude Code v2 适配配置 — 三级权限模型（auto-allow / ask / deny）",
+    "_usage":  "将此内容合并到 ~/.claude/settings.json 或项目的 .claude/settings.json",
+    "permissions":  {
+                        "allow":  [
+                                      "Bash(ls:*)",
+                                      "Bash(cat:*)",
+                                      "Bash(grep:*)",
+                                      "Bash(head:*)",
+                                      "Bash(tail:*)",
+                                      "Bash(wc:*)",
+                                      "Bash(find:*)",
+                                      "Bash(tree:*)",
+                                      "Bash(which:*)",
+                                      "Bash(where:*)",
+                                      "Bash(echo:*)",
+                                      "Bash(pwd)",
+                                      "Bash(env)",
+                                      "Bash(file:*)",
+                                      "Bash(stat:*)",
+                                      "Bash(git status:*)",
+                                      "Bash(git diff:*)",
+                                      "Bash(git log:*)",
+                                      "Bash(git branch:*)",
+                                      "Bash(git show:*)",
+                                      "Bash(git add:*)",
+                                      "Bash(git commit:*)",
+                                      "Bash(git checkout:*)",
+                                      "Bash(git stash:*)",
+                                      "Bash(git merge:*)",
+                                      "Bash(git rebase:*)",
+                                      "Bash(git restore:*)",
+                                      "Bash(npm:*)",
+                                      "Bash(pnpm:*)",
+                                      "Bash(bun:*)",
+                                      "Bash(npx:*)",
+                                      "Bash(node:*)",
+                                      "Bash(tsc:*)",
+                                      "Bash(tsx:*)",
+                                      "Bash(eslint:*)",
+                                      "Bash(prettier:*)",
+                                      "Bash(biome:*)",
+                                      "Bash(oxlint:*)",
+                                      "Bash(vitest:*)",
+                                      "Bash(jest:*)",
+                                      "Bash(pytest:*)",
+                                      "Bash(cargo test:*)",
+                                      "Bash(go test:*)",
+                                      "Bash(coverage:*)",
+                                      "Bash(python:*)",
+                                      "Bash(python3:*)",
+                                      "Bash(pip:*)",
+                                      "Bash(uv:*)",
+                                      "Bash(poetry:*)",
+                                      "Bash(cargo:*)",
+                                      "Bash(go:*)",
+                                      "Bash(rustc:*)",
+                                      "Bash(curl:*)",
+                                      "Bash(jq:*)",
+                                      "Bash(sed:*)",
+                                      "Bash(awk:*)",
+                                      "Bash(sort:*)",
+                                      "Bash(uniq:*)",
+                                      "Read",
+                                      "Write",
+                                      "Edit"
+                                  ],
+                        "ask":  [
+                                    "Bash(git push:*)",
+                                    "Bash(git reset --hard:*)",
+                                    "Bash(git clean:*)",
+                                    "Bash(rm:*)",
+                                    "Bash(rmdir:*)",
+                                    "Bash(mv:*)",
+                                    "Bash(docker:*)",
+                                    "Bash(kubectl:*)",
+                                    "Bash(helm:*)",
+                                    "Bash(terraform:*)",
+                                    "Bash(chmod:*)",
+                                    "Bash(chown:*)",
+                                    "Bash(sudo:*)"
+                                ],
+                        "deny":  [
+                                     "Bash(rm -rf /:*)",
+                                     "Bash(rm -rf ~:*)",
+                                     "Bash(rm -rf /*:*)",
+                                     "Bash(sudo rm -rf:*)",
+                                     "Bash(mkfs:*)",
+                                     "Bash(dd if=:*)"
+                                 ]
+                    },
+    "mcpServers":  {
+                       "github":  {
+                                      "command":  "npx",
+                                      "args":  [
+                                                   "-y",
+                                                   "@modelcontextprotocol/server-github"
+                                               ],
+                                      "env":  {
+                                                  "GITHUB_PERSONAL_ACCESS_TOKEN":  "${GITHUB_TOKEN}"
+                                              }
+                                  },
+                       "postgres":  {
+                                        "command":  "npx",
+                                        "args":  [
+                                                     "-y",
+                                                     "@modelcontextprotocol/server-postgres"
+                                                 ],
+                                        "env":  {
+                                                    "POSTGRES_CONNECTION_STRING":  "${DATABASE_URL}"
+                                                }
+                                    },
+                       "filesystem":  {
+                                          "command":  "npx",
+                                          "args":  [
+                                                       "-y",
+                                                       "@modelcontextprotocol/server-filesystem",
+                                                       "${PROJECT_ROOT}"
+                                                   ]
+                                      },
+                       "sequential-thinking":  {
+                                                   "command":  "npx",
+                                                   "args":  [
+                                                                "-y",
+                                                                "@modelcontextprotocol/server-sequential-thinking"
+                                                            ]
+                                               }
+                   },
+    "skillsPath":  ".claude/skills",
+    "postCommands":  [
+                         {
+                             "command":  "echo \u0027Session ended. Running post-session hooks...\u0027",
+                             "description":  "Post-session notification"
+                         }
+                     ]
+}

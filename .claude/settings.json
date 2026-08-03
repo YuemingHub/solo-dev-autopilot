@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)",
+      "Bash(wc:*)", "Bash(find:*)", "Bash(tree:*)", "Bash(which:*)", "Bash(where:*)",
+      "Bash(echo:*)", "Bash(pwd)", "Bash(env)", "Bash(file:*)", "Bash(stat:*)",
+      "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)", "Bash(git branch:*)",
+      "Bash(git show:*)", "Bash(git add:*)", "Bash(git commit:*)", "Bash(git checkout:*)",
+      "Bash(git stash:*)", "Bash(git merge:*)", "Bash(git rebase:*)", "Bash(git restore:*)",
+      "Bash(npm:*)", "Bash(pnpm:*)", "Bash(bun:*)", "Bash(npx:*)", "Bash(node:*)",
+      "Bash(tsc:*)", "Bash(tsx:*)",
+      "Bash(eslint:*)", "Bash(prettier:*)", "Bash(biome:*)", "Bash(oxlint:*)",
+      "Bash(vitest:*)", "Bash(jest:*)", "Bash(pytest:*)", "Bash(cargo test:*)",
+      "Bash(go test:*)", "Bash(coverage:*)",
+      "Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)", "Bash(uv:*)", "Bash(poetry:*)",
+      "Bash(cargo:*)", "Bash(go:*)", "Bash(rustc:*)",
+      "Bash(curl:*)", "Bash(jq:*)", "Bash(sed:*)", "Bash(awk:*)",
+      "Bash(sort:*)", "Bash(uniq:*)",
+      "Read", "Write", "Edit"
+    ],
+    "ask": [
+      "Bash(git push:*)", "Bash(git reset --hard:*)", "Bash(git clean:*)",
+      "Bash(rm:*)", "Bash(rmdir:*)", "Bash(mv:*)",
+      "Bash(docker:*)", "Bash(kubectl:*)", "Bash(helm:*)", "Bash(terraform:*)",
+      "Bash(chmod:*)", "Bash(chown:*)", "Bash(sudo:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /:*)", "Bash(rm -rf ~:*)", "Bash(rm -rf /*:*)",
+      "Bash(sudo rm -rf:*)", "Bash(mkfs:*)", "Bash(dd if=:*)"
+    ]
+  },
+  "skillsPath": ".claude/skills"
+}

@@ -1,4 +1,4 @@
-﻿# 🚀 Solo Dev Autopilot
+ 🚀 Solo Dev Autopilot
 
 > **一个人，一个 AI，一个完整产品。**  
 > 通用 Solo 开发自动驾驶环境 —— Clone、配置一次、永久自动驾驶。
@@ -7,7 +7,7 @@
 
 | 新手痛点 | 我们的解法 |
 |---------|-----------|
-| 不知道选什么技术栈 | 预设最优全栈配置 |
+| 不知道选什么技术栈 | 预设默认全栈配置 |
 | 每次开会话 AI 不记得上下文 | 自动代码地图 + 持久化记忆 |
 | 写完代码不知道对不对 | 自动 P0-P3 分级审查 |
 | 不知道怎么提交/部署 | 一键 commit + 部署前检查 |
@@ -46,52 +46,63 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 # 或者把 skills/ 和 templates/ 复制到已有项目中
 ```
 
-## 📁 仓库结构
+## 📂 仓库结构
 
 ```
 solo-dev-autopilot/
-├── README.md                          ← 你在这里
+├── README.md
 ├── LICENSE                            ← MIT
+├── CHANGELOG-v2.md                    ← v2 更新日志
+├── BOOTSTRAP-PROMPT.md                ← 首次启动引导
 │
-├── skills/                            ← 🔧 核心：可复用的 Skill 剧本
-│   ├── context-map.md                 │   代码地图（会话恢复的核心）
-│   ├── fullstack-scaffold.md          │   全栈项目脚手架生成
-│   ├── code-review.md                 │   P0-P3 分级代码审查
-│   ├── commit-helper.md               │   智能 Commit 信息生成
-│   ├── deploy-check.md                │   部署前安全检查
-│   ├── troubleshoot.md                │   新手问题自动排查
-│   ├── api-designer.md               │   API 接口设计与文档生成
-│   └── task-planner.md               │   目标拆解与防漂移器
+├── .claude/                           ← 🧠 Claude Code 原生适配（v2 新增）
+│   ├── settings.json                  │   三级权限模型（auto-allow / ask / deny）
+│   └── skills/                        │   官方 SKILL.md 格式技能（Claude Code 自动识别）
+│       ├── api-designer/SKILL.md      │   API 接口设计
+│       ├── code-review/SKILL.md       │   P0-P3 分级代码审查
+│       ├── commit-helper/SKILL.md     │   智能 Commit 信息
+│       ├── context-map/SKILL.md       │   代码地图（会话恢复核心）
+│       ├── deploy-check/SKILL.md      │   部署前安全检查
+│       ├── fullstack-scaffold/SKILL.md│   全栈脚手架生成
+│       ├── git-workflow/SKILL.md      │   Git 工作流引导
+│       ├── task-planner/SKILL.md      │   目标拆解与防漂移
+│       └── troubleshoot/SKILL.md      │   新手问题排查
 │
-├── configs/                           ← ⚙️ 各工具的最优预设配置
-│   ├── mcp-servers.json              │   MCP 服务器推荐配置（从后端到前端）
-│   └── tool-presets/                  │   各工具的适配配置
-│       ├── claude-code.json          │
+├── skills/                            ← ⚠️ v1 源文件（已迁移至 .claude/skills/）
+│
+├── configs/                           ← ⚙️ 各工具的预设配置
+│   ├── mcp-servers.json              │   MCP 服务器推荐配置
+│   └── tool-presets/                  │   各工具适配配置
+│       ├── claude-code.json          │   三级权限 + MCP + skillsPath
 │       ├── cursor.json               │
 │       ├── cline.json                │
-│       └── reasonix.json             │
+│       └── reasonix.json             │   三级权限 + hooks
 │
-├── scripts/                           ← 🤖 自动化脚本
-│   ├── setup.sh                      │   一键安装与环境检测
-│   ├── post-session.sh              │   会话结束后的自动化（代码地图+记忆更新）
-│   ├── generate-code-map.py         │   代码地图生成引擎
-│   └── auto-evolve.sh               │   最优解搜索与精选替换
+├── scripts/                           ← 🔧 自动化脚本
+│   ├── setup.sh / setup.ps1          │   一键安装（macOS/Linux/Windows）
+│   ├── post-session.sh               │   会话结束自动化（代码地图+记忆更新）
+│   ├── install-git-hooks.sh          │   Git Hooks 安装（带备份）
+│   ├── install-git-hooks.ps1         │   Git Hooks 安装（Windows）
+│   └── auto-evolve.sh                │   社区方案搜索
 │
-├── templates/                         ← 📋 项目模板
-│   ├── PROJECT-MEMORY-template.md    │   项目记忆模板（AI 每次启动自动加载）
-│   ├── gitignore                     │   最优 .gitignore（按语言分类）
-│   └── env-example.env              │   环境变量模板
+├── templates/                         ← 📝 项目模板
+│   ├── AI-GUIDE-template.md          │   AI 协作指南（防幻觉）
+│   ├── ONBOARDING-template.md        │   新人引导模板
+│   ├── PROJECT-MEMORY-template.md    │   项目记忆模板
+│   ├── SESSION_DRIVER-template.md    │   会话驱动模板
+│   ├── pre-commit-hook               │   P0 阻止 + P1 警告
+│   ├── pre-push-hook                 │   推送前审查提醒
+│   ├── gitignore                     │   推荐 .gitignore
+│   └── env-example.env               │   环境变量模板
 │
-├── docs/                              ← 📖 文档
+├── docs/                              ← 📚 文档
+│   ├── BLUEPRINT-v2.md               │   v2 开发蓝图（14 章 + 附录）
 │   ├── getting-started.md            │   详细入门指南
-│   ├── newbie-pitfalls.md            │   新手避坑手册
-│   ├── mcp-guide.md                  │   MCP 配置详解
-│   └── skill-writing.md             │   自定义 Skill 编写指南
+│   └── newbie-pitfalls.md            │   新手避坑手册
 │
-└── .github/workflows/                ← 🔄 GitHub Actions
-    └── auto-evolve.yml              │   每周自动搜索最优解并提 PR
+└── .github/workflows/                ← ⚡ GitHub Actions
+    └── auto-evolve.yml               │   每周自动搜索社区方案
 ```
-
 ## 🔧 核心 Skill 说明
 
 ### 1️⃣ context-map — 代码地图（最重要）
@@ -112,7 +123,7 @@ solo-dev-autopilot/
 
 **做什么**：一句话描述需求 → 生成完整的前后端项目骨架。
 
-**支持的技术栈组合**（已选好最优解）：
+**支持的技术栈组合**（默认选型如下（均可替换））：
 
 | 后端 | 前端 | 数据库 | 部署 |
 |------|------|--------|------|
@@ -121,7 +132,7 @@ solo-dev-autopilot/
 | Python + FastAPI | React + Next.js | PostgreSQL | Railway |
 | Bun + Elysia | SvelteKit | Turso | Deno Deploy |
 
-**为什么这些是最优解**：详见 `docs/getting-started.md` 技术选型章节。
+**为什么选这些作为默认解**：详见 `docs/getting-started.md` 技术选型章节。
 
 ### 3️⃣ code-review — 代码审查
 
@@ -211,7 +222,7 @@ solo-dev-autopilot/
 - 新手避坑案例（你踩过的坑）
 - 技术栈模板（其他语言/框架组合）
 
-详见 [CONTRIBUTING.md](docs/contributing.md)
+详见 [getting-started.md](docs/getting-started.md)
 
 ## 📄 License
 

@@ -1,1 +1,68 @@
-{"_comment": "Reasonix 适配配置", "_usage": "将此内容合并到 ~/.reasonix/config.json 的 mcp.servers 字段", "mcpServers": {"github": {"transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-github"], "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"}}, "postgres": {"transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-postgres"], "env": {"POSTGRES_CONNECTION_STRING": "${DATABASE_URL}"}}, "filesystem": {"transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "${PROJECT_ROOT}"]}, "sequential-thinking": {"transport": "stdio", "command": "npx", "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]}}, "permissions": {"shell": {"allow": ["npm test", "npm run ", "git ", "pnpm ", "bun ", "cat ", "ls ", "grep ", "head ", "tail "]}},"hooks":{"PostToolUse":[{"matcher":{"tool":"edit_file"},"command":"npx biome format --write {{file}} 2>/dev/null || true","description":"编辑文件后自动格式化"}],"Stop":[{"command":"bash scripts/post-session.sh","description":"会话结束：生成代码地图 + 更新记忆"}]}}
+{
+  "_comment": "Reasonix 适配配置 — 三级权限模型（auto-allow / ask / deny）",
+  "_usage": "将此内容合并到 .reasonix/settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)",
+      "Bash(find:*)", "Bash(echo:*)", "Bash(pwd)", "Bash(tree:*)", "Bash(wc:*)",
+      "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)", "Bash(git add:*)",
+      "Bash(git commit:*)", "Bash(git checkout:*)", "Bash(git branch:*)", "Bash(git show:*)",
+      "Bash(npm:*)", "Bash(pnpm:*)", "Bash(bun:*)", "Bash(npx:*)", "Bash(node:*)",
+      "Bash(tsc:*)", "Bash(tsx:*)",
+      "Bash(eslint:*)", "Bash(prettier:*)", "Bash(biome:*)",
+      "Bash(vitest:*)", "Bash(jest:*)", "Bash(pytest:*)", "Bash(cargo test:*)", "Bash(go test:*)",
+      "Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)", "Bash(uv:*)",
+      "Bash(cargo:*)", "Bash(go:*)",
+      "Bash(curl:*)", "Bash(jq:*)", "Bash(sed:*)", "Bash(awk:*)",
+      "Read", "Write", "Edit"
+    ],
+    "ask": [
+      "Bash(git push:*)", "Bash(git reset --hard:*)", "Bash(git clean:*)",
+      "Bash(rm:*)", "Bash(mv:*)",
+      "Bash(docker:*)", "Bash(kubectl:*)", "Bash(sudo:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /:*)", "Bash(rm -rf ~:*)", "Bash(sudo rm -rf:*)", "Bash(mkfs:*)"
+    ]
+  },
+  "mcpServers": {
+    "github": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"}
+    },
+    "postgres": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {"POSTGRES_CONNECTION_STRING": "${DATABASE_URL}"}
+    },
+    "filesystem": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${PROJECT_ROOT}"]
+    },
+    "sequential-thinking": {
+      "transport": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": {"tool": "edit_file"},
+        "command": "npx biome format --write {{file}} 2>/dev/null || true",
+        "description": "编辑文件后自动格式化"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "bash scripts/post-session.sh",
+        "description": "会话结束：生成代码地图 + 更新记忆"
+      }
+    ]
+  },
+  "skillsPath": ".reasonix/skills"
+}
