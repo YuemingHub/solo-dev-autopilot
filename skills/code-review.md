@@ -1,13 +1,7 @@
 ---
 name: code-review
-description: >
-  对当前改动做系统性代码审查，按 P0-P3 优先级分级。
-  新手写完代码不知道对不对——这个 Skill 替你做质量把关。
-  覆盖安全漏洞、逻辑错误、性能问题、代码质量四个维度。
-runAs: subagent
-tools: [read_file, list_directory, search_content, run_command]
-tags: [review, quality, security, best-practices]
-priority: high
+description: 对当前改动做系统性代码审查，按 P0-P3 优先级分级。 新手写完代码不知道对不对——这个 Skill 替你做质量把关。 覆盖安全漏洞、逻辑错误、性能问题、代码质量四个维度。
+license: MIT
 ---
 
 # Code Review — P0-P3 分级代码审查器

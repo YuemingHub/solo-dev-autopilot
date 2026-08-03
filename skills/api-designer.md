@@ -1,13 +1,7 @@
 ---
 name: api-designer
-description: >
-  API 接口设计与文档生成器。根据业务需求自动设计 RESTful API，
-  生成 OpenAPI/Swagger 规范、请求/响应类型定义、Zod 验证 schema。
-  新手最容易把 API 设计得混乱——这个 Skill 确保接口规范一致。
-runAs: subagent
-tools: [write_file, read_file, list_directory]
-tags: [api, design, restful, openapi, documentation]
-priority: medium
+description: API 接口设计与文档生成器。根据业务需求自动设计 RESTful API， 生成 OpenAPI/Swagger 规范、请求/响应类型定义、Zod 验证 schema。 新手最容易把 API 设计得混乱——这个 Skill 确保接口规范一致。
+license: MIT
 ---
 
 # API Designer — 接口设计与文档生成器

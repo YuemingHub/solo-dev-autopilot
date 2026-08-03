@@ -1,13 +1,7 @@
-﻿---
+---
 name: task-planner
-description: >
-  把新手的模糊想法拆解成可执行的任务清单。新手最常说"我想做个 xxx"但不知道从哪开始——
-  这个 Skill 帮你把大目标拆成 30 分钟能完成的小任务，写入 SESSION_DRIVER.md，
-  并在执行过程中防止目标漂移。
-runAs: subagent
-tools: [read_file, write_file, list_directory]
-tags: [planning, task-breakdown, goal-management, anti-drift]
-priority: critical
+description: 把新手的模糊想法拆解成可执行的任务清单。新手最常说"我想做个 xxx"但不知道从哪开始—— 这个 Skill 帮你把大目标拆成 30 分钟能完成的小任务，写入 SESSION_DRIVER.md， 并在执行过程中防止目标漂移。
+license: MIT
 ---
 
 # Task Planner — 目标拆解与防漂移器

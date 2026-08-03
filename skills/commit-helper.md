@@ -1,12 +1,7 @@
-﻿---
+---
 name: commit-helper
-description: >
-  分析当前所有改动，自动生成符合 Conventional Commits 规范的提交信息。
-  新手最纠结"commit message 怎么写"——这个 Skill 彻底消除这个决策点。
-runAs: subagent
-tools: [read_file, run_command, list_directory]
-tags: [git, commit, conventional-commits, automation]
-priority: high
+description: 分析当前所有改动，自动生成符合 Conventional Commits 规范的提交信息。 新手最纠结"commit message 怎么写"——这个 Skill 彻底消除这个决策点。
+license: MIT
 ---
 
 # Commit Helper — 智能 Commit 信息生成器

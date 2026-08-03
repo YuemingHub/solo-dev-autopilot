@@ -2,6 +2,30 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.3.3 — 复核修复批次（2026-08-03）
+
+> 对仓库做独立复核，修复 3 处残留，补上 Skill 兼容层同步机制，防止双格式漂移。
+
+### 修复
+
+1. **clone URL 占位符**：README / getting-started 的 `YOUR_USERNAME` → `YuemingHub`（仓库已公开，占位符失效）
+2. **scoring.md 过时表述**：维度 6"CI 未实际跑过" → 修正为实测记录（verification.md §3：GitHub Actions 连续 3 次全绿）
+3. **docs/EVOLVE_CHANGELOG.md 缺失**：auto-evolve.yml 引用的变更记录文件从未创建，已补齐
+
+### 新增
+
+- `scripts/sync-skills.py` — Skill 兼容层同步：`.claude/skills/<name>/SKILL.md`（官方）→ `skills/<name>.md`（社区工具平铺兼容层）；支持 `--check` 供 CI 使用
+- 补全 4 个缺失的平铺兼容文件：test-runner / ci-helper / observability / production-preflight（此前兼容层只有 9/13，Reasonix / Cline 用户拿不到 Phase 3 的 4 个新 Skill）
+
+### 增强
+
+- `scripts/ci-self-check.sh` — 新增第 4 段：Skill 兼容层同步检查（`sync-skills.py --check`；python3 不可用时降级为存在性检查）
+
+### 验证
+
+- `python scripts/sync-skills.py` 本地生成 13 个平铺文件无错误
+- 推送后由 GitHub Actions 完整自检（含第 4 段首次运行）
+
 ## v2.3.2 — CI 模板端到端验证修复（2026-08-03）
 
 > 用真实 Node 项目把 templates/ci-node.yml 整条流水线跑了一遍，发现并修复 3 个模板缺陷。

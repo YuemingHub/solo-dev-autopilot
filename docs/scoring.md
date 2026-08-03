@@ -93,7 +93,7 @@
 | 测试 skill | test-runner（npm test / pytest 自动识别 + 覆盖率报告） |
 | 本地复现 | ci-helper 支持本地复现 CI 失败 |
 
-**扣分点**：仓库自身无测试（本仓库是配置包，非代码项目）；CI 未实际跑过。
+**扣分点**：仓库自身无测试（本仓库是配置包，非代码项目）。CI 已实测全绿（见 [verification.md](./verification.md) §3：GitHub Actions 连续 3 次通过）。
 
 ### 7️⃣ 可观测性（权重 10%，目标 8.5）
 

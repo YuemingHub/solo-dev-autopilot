@@ -1,13 +1,7 @@
-﻿---
+---
 name: context-map
-description: >
-  扫描整个项目，生成结构化的"代码地图"。这是会话恢复的核心机制。
-  每次会话结束时自动触发，下次启动时 AI 加载代码地图即可瞬间恢复全部上下文。
-  解决新手最大的隐性成本：每次重新开会话后 AI 不记得之前做了什么。
-runAs: subagent
-tools: [read_file, list_directory, search_content, glob]
-tags: [context, memory, session-recovery, codebase-understanding]
-priority: critical
+description: 扫描整个项目，生成结构化的"代码地图"。这是会话恢复的核心机制。 每次会话结束时自动触发，下次启动时 AI 加载代码地图即可瞬间恢复全部上下文。 解决新手最大的隐性成本：每次重新开会话后 AI 不记得之前做了什么。
+license: MIT
 ---
 
 # Context Map — 项目代码地图生成器

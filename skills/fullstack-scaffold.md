@@ -1,13 +1,7 @@
 ---
 name: fullstack-scaffold
-description: >
-  一句话描述需求 → 生成完整的前后端项目骨架。
-  所有技术选型已预设为最优解，新手不需要做任何决策。
-  支持 Node.js/Bun/Python 后端 + React/Vue/Svelte 前端的多种组合。
-runAs: subagent
-tools: [write_file, create_directory, list_directory, run_command]
-tags: [scaffold, project-creation, fullstack, bootstrap]
-priority: high
+description: 一句话描述需求 → 生成完整的前后端项目骨架。 所有技术选型已预设为最优解，新手不需要做任何决策。 支持 Node.js/Bun/Python 后端 + React/Vue/Svelte 前端的多种组合。
+license: MIT
 ---
 
 # Fullstack Scaffold — 全栈项目脚手架生成器

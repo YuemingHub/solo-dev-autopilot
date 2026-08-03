@@ -3,7 +3,7 @@
 # Solo Dev Autopilot — 仓库自检
 # 本地可跑：bash scripts/ci-self-check.sh
 # CI 调用：.github/workflows/ci.yml 执行同一脚本
-# 检查：JSON 有效性 / SKILL.md 格式 / Shell 语法
+# 检查：JSON 有效性 / SKILL.md 格式 / Shell 语法 / Skill 兼容层同步
 # 纯 POSIX，不依赖 dirname/basename（Git for Windows 的迷你 sh 也能跑）
 # ============================================
 
@@ -81,6 +81,30 @@ for f in scripts/*.sh templates/pre-commit-hook templates/pre-push-hook; do
   fi
   rm -f "$tmp"
 done
+
+echo "=== 4. Skill 平铺兼容层同步（.claude/skills/*/SKILL.md → skills/*.md） ==="
+if command -v python3 >/dev/null 2>&1; then
+  if python3 scripts/sync-skills.py --check; then
+    ok "Skill 兼容层同步"
+  else
+    bad "Skill 兼容层漂移（运行 python3 scripts/sync-skills.py 重新生成）"
+  fi
+else
+  # python3 不可用：降级为存在性检查
+  legacy_missing=0
+  for dir in .claude/skills/*/; do
+    [ -d "$dir" ] || continue
+    skill=${dir%/}
+    skill=${skill##*/}
+    if [ ! -f "skills/${skill}.md" ]; then
+      bad "缺少平铺兼容文件: skills/${skill}.md"
+      legacy_missing=$((legacy_missing + 1))
+    fi
+  done
+  if [ "$legacy_missing" -eq 0 ]; then
+    ok "Skill 兼容层存在性（python3 不可用，降级模式）"
+  fi
+fi
 
 echo ""
 echo "结果: $pass 通过 / $fail 失败"

@@ -1,12 +1,7 @@
 ---
 name: troubleshoot
-description: >
-  新手问题自动排查器。覆盖 50+ 新手高频问题：依赖冲突、端口占用、环境变量缺失、
-  构建失败、数据库连接错误等。输入错误信息，输出结构化的排查步骤和修复方案。
-runAs: subagent
-tools: [read_file, run_command, search_content, list_directory]
-tags: [debug, troubleshoot, error-resolution, newbie-help]
-priority: high
+description: 新手问题自动排查器。覆盖 50+ 新手高频问题：依赖冲突、端口占用、环境变量缺失、 构建失败、数据库连接错误等。输入错误信息，输出结构化的排查步骤和修复方案。
+license: MIT
 ---
 
 # Troubleshoot — 新手问题自动排查器

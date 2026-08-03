@@ -34,7 +34,7 @@ v2 优先 **Claude Code 全适配**（官方 SKILL.md + 插件市场原生支持
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/YOUR_USERNAME/solo-dev-autopilot.git
+git clone https://github.com/YuemingHub/solo-dev-autopilot.git
 cd solo-dev-autopilot
 
 # 2. 运行一键安装（检测环境、安装 Skill、引导安装 superpowers）
@@ -118,7 +118,7 @@ solo-dev-autopilot/
 │       ├── test-runner/SKILL.md       │   测试闭环 + 覆盖率（v2.1 新增）
 │       └── troubleshoot/SKILL.md      │   新手问题排查
 │
-├── skills/                            ← ⚠️ v1 源文件（已迁移至 .claude/skills/）
+├── skills/                            ← 🔗 社区工具兼容层（平铺 .md，由 sync-skills.py 从 .claude/skills/ 同步）
 │
 ├── configs/                           ← ⚙️ 各工具的预设配置
 │   ├── permissions.json               │   三级危险度权限模型（唯一事实源，v2.1 新增）
@@ -134,6 +134,7 @@ solo-dev-autopilot/
 │   ├── setup.sh / setup.ps1          │   一键安装（macOS/Linux/Windows + 模式选择）
 │   ├── post-session.sh / post-session.ps1 │ 会话结束自动化（v2.1 新增 Windows 版）
 │   ├── install-git-hooks.sh / .ps1   │   Git Hooks 安装（带备份）
+│   ├── sync-skills.py                │   Skill 兼容层同步（v2.3.3 新增）
 │   └── auto-evolve.sh                │   社区方案搜索
 │
 ├── templates/                         ← 📝 项目模板
@@ -152,6 +153,7 @@ solo-dev-autopilot/
 │   ├── tool-setup.md                 │   各 AI 工具安装引导（v2.3 新增）
 │   ├── scoring.md                    │   评分维度表 8 维加权（v2.3 新增）
 │   ├── verification.md              │   验证记录：所有实测证据可复现（v2.3.2 新增）
+│   ├── EVOLVE_CHANGELOG.md          │   自动进化变更记录（v2.3.3 补齐）
 │   ├── newbie-pitfalls.md            │   新手避坑手册
 │   ├── production-checklist.md       │   生产上线清单（v2.1 新增）
 │   └── autopilot-boundaries.md       │   AI 边界原则（v2.1 新增）

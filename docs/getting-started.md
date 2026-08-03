@@ -68,7 +68,7 @@ claude
 ### Step 1: 克隆仓库
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/solo-dev-autopilot.git
+git clone https://github.com/YuemingHub/solo-dev-autopilot.git
 cd solo-dev-autopilot
 ```
 
