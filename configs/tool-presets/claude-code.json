@@ -1,5 +1,5 @@
 {
-    "_comment":  "Claude Code v2 适配配置 — 三级权限模型（auto-allow / ask / deny）",
+    "_comment":  "Claude Code v2 适配配置 — 三级权限模型（auto-allow / ask / deny），权限唯一事实源为 configs/permissions.json",
     "_usage":  "将此内容合并到 ~/.claude/settings.json 或项目的 .claude/settings.json",
     "permissions":  {
                         "allow":  [
@@ -27,8 +27,6 @@
                                       "Bash(git commit:*)",
                                       "Bash(git checkout:*)",
                                       "Bash(git stash:*)",
-                                      "Bash(git merge:*)",
-                                      "Bash(git rebase:*)",
                                       "Bash(git restore:*)",
                                       "Bash(npm:*)",
                                       "Bash(pnpm:*)",
@@ -61,32 +59,42 @@
                                       "Bash(awk:*)",
                                       "Bash(sort:*)",
                                       "Bash(uniq:*)",
+                                      "Bash(sqlite3:*)",
+                                      "Bash(psql:*)",
+                                      "Bash(mysql:*)",
                                       "Read",
                                       "Write",
                                       "Edit"
                                   ],
                         "ask":  [
                                     "Bash(git push:*)",
+                                    "Bash(git merge:*)",
+                                    "Bash(git rebase:*)",
                                     "Bash(git reset --hard:*)",
                                     "Bash(git clean:*)",
                                     "Bash(rm:*)",
                                     "Bash(rmdir:*)",
                                     "Bash(mv:*)",
+                                    "Bash(cp:*)",
                                     "Bash(docker:*)",
+                                    "Bash(npm publish:*)",
+                                    "Bash(docker push:*)",
                                     "Bash(kubectl:*)",
                                     "Bash(helm:*)",
                                     "Bash(terraform:*)",
                                     "Bash(chmod:*)",
-                                    "Bash(chown:*)",
-                                    "Bash(sudo:*)"
+                                    "Bash(chown:*)"
                                 ],
                         "deny":  [
                                      "Bash(rm -rf /:*)",
                                      "Bash(rm -rf ~:*)",
                                      "Bash(rm -rf /*:*)",
                                      "Bash(sudo rm -rf:*)",
+                                     "Bash(sudo:*)",
                                      "Bash(mkfs:*)",
-                                     "Bash(dd if=:*)"
+                                     "Bash(dd if=:*)",
+                                     "Bash(chmod 777:*)",
+                                     "Bash(curl|sh:*)"
                                  ]
                     },
     "mcpServers":  {

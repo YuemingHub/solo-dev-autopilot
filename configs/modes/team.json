@@ -1,5 +1,18 @@
 {
-  "permissions": {
+  "name": "team",
+  "label": "Team 团队模式",
+  "description": "小团队协作：危险度分级，破坏性操作确认，P0 问题阻止提交。",
+  "audience": "小团队 / 正在认真做产品的个人开发者",
+  "permission_tier": "三级危险度分级（safe 放行 / ask 确认 / danger 拒绝+确认）",
+  "hooks": {
+    "pre_commit": "p0-block",
+    "pre_push": "disabled"
+  },
+  "memory": {
+    "strategy": "summary",
+    "description": "摘要 + 按需加载：CODEMAP 分级，PROJECT-MEMORY 超 2000 字自动摘要"
+  },
+  "claude_permissions": {
     "allow": [
       "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)",
       "Bash(wc:*)", "Bash(find:*)", "Bash(tree:*)", "Bash(which:*)", "Bash(where:*)",
@@ -30,6 +43,5 @@
       "Bash(sudo rm -rf:*)", "Bash(sudo:*)", "Bash(mkfs:*)", "Bash(dd if=:*)",
       "Bash(chmod 777:*)", "Bash(curl|sh:*)"
     ]
-  },
-  "skillsPath": ".claude/skills"
+  }
 }

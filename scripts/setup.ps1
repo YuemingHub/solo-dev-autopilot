@@ -172,6 +172,60 @@ function Install-Templates {
     } else { Warn "SESSION_DRIVER.md 已存在，跳过" }
 }
 
+# ---- 选择配置模式 ----
+function Choose-Mode {
+    Info ""
+    Info "选择配置模式（决定权限严格度与 hook 行为）:"
+    Info "  1) toy         — 新手/实验：几乎不确认，P0 只警告不阻止"
+    Info "  2) team        — 小团队（默认）：危险操作确认，P0 阻止提交"
+    Info "  3) production  — 上线项目：最严格，生产库二次确认"
+    $choice = Read-Host "选择 (1/2/3) [默认: 2]"
+    switch ($choice) {
+        "1" { $script:Mode = "toy" }
+        "3" { $script:Mode = "production" }
+        default { $script:Mode = "team" }
+    }
+    Set-Content -Path (Join-Path $TargetDir ".autopilot-mode") -Value $Mode -Encoding ASCII
+    Success "配置模式: $Mode（已写入 .autopilot-mode，hook 据此调整严格度）"
+}
+
+# ---- 设置 Git Hooks ----
+function Install-GitHooks {
+    Info ""
+    Info "配置 Git Hooks（P0 检查 + 推送前检查）..."
+    $enableHooks = Read-Host "是否安装 git hooks（pre-commit 质量门 / pre-push 提醒）？(y/n) [默认: y]"
+    if ($enableHooks -eq "" -or $enableHooks -match "^[Yy]") {
+        $hooksDir = Join-Path $TargetDir ".git\hooks"
+        if (-not (Test-Path $hooksDir)) {
+            Warn "目标目录还不是 Git 仓库，先初始化再安装 hooks"
+            return
+        }
+
+        # 备份已有 hook（不覆盖用户已有配置）
+        $backupDir = Join-Path $TargetDir ".git\hooks-backup"
+        foreach ($hook in @("pre-commit", "pre-push")) {
+            $existing = Join-Path $hooksDir $hook
+            if ((Test-Path $existing) -and -not ((Get-Content $existing -TotalCount 1 -ErrorAction SilentlyContinue) -match "Solo Dev Autopilot")) {
+                New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+                Copy-Item $existing (Join-Path $backupDir "$hook-$(Get-Date -Format 'yyyyMMddHHmmss')") -Force
+                Warn "已有 $hook 已备份到 $backupDir\"
+            }
+        }
+
+        # 安装模板 hooks
+        $templatePrecommit = Join-Path $RepoRoot "templates\pre-commit-hook"
+        $templatePrepush = Join-Path $RepoRoot "templates\pre-push-hook"
+        if (Test-Path $templatePrecommit) {
+            Copy-Item $templatePrecommit (Join-Path $hooksDir "pre-commit") -Force
+            Success "pre-commit 已安装（P0 检查，严格度: $Mode）"
+        }
+        if (Test-Path $templatePrepush) {
+            Copy-Item $templatePrepush (Join-Path $hooksDir "pre-push") -Force
+            Success "pre-push 已安装（推送前检查）"
+        }
+    }
+}
+
 # ---- 初始化 Git ----
 function Init-Git {
     if (Test-Path (Join-Path $TargetDir ".git")) {
@@ -197,6 +251,7 @@ function Print-Summary {
     Write-Host "=============================================" -ForegroundColor Green
     Write-Host ""
     Write-Host " 目标目录: $TargetDir"
+    Write-Host " 配置模式: $Mode（toy=宽松 / team=标准 / production=严格）"
     Write-Host " 已安装:"
     Write-Host "   ├── .claude/skills/    $((Get-ChildItem (Join-Path $TargetDir '.claude\skills') -Filter 'SKILL.md' -Recurse -ErrorAction SilentlyContinue).Count) 个 Skill（官方格式）"
     Write-Host "   ├── .gitignore       OK"
@@ -223,6 +278,10 @@ function Print-Summary {
     Write-Host "   /skill code-review       — 代码审查"
     Write-Host "   /skill commit-helper     — 生成提交信息"
     Write-Host "   /skill deploy-gate       — 部署门禁（人工确认红线）"
+    Write-Host "   /skill test-runner       — 测试闭环（覆盖率）"
+    Write-Host "   /skill ci-helper         — CI 配置与排障"
+    Write-Host "   /skill observability     — 日志/Sentry/健康检查"
+    Write-Host "   /skill production-preflight — 上线前预检"
     Write-Host "   /skill troubleshoot      — 问题排查"
     Write-Host ""
 }
@@ -236,8 +295,10 @@ Write-Host "=============================================" -ForegroundColor Cyan
 Write-Host ""
 
 Detect-Environment
+Choose-Mode
 Install-Skills
 Install-Superpowers
 Install-Templates
 Init-Git
+Install-GitHooks
 Print-Summary

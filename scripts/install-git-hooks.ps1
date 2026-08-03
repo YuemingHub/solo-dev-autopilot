@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$ProjectRoot = (Resolve-Path "$PSScriptRoot/..").Path
 )
 

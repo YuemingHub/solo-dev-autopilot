@@ -1,5 +1,18 @@
 {
-  "permissions": {
+  "name": "production",
+  "label": "Production 生产模式",
+  "description": "上线项目：危险度分级 + 生产库二次确认 + 全量检查，最严格的一档。",
+  "audience": "已上线 / 即将上线的项目",
+  "permission_tier": "三级危险度分级 + 生产库（psql/mysql/docker push/kubectl）二次确认",
+  "hooks": {
+    "pre_commit": "p0-block",
+    "pre_push": "full-check"
+  },
+  "memory": {
+    "strategy": "trim+archive",
+    "description": "摘要 + 裁剪 + 归档：CODEMAP 按模块分级，PROJECT-MEMORY 超 2000 字自动摘要，SESSION_DRIVER 只保留最近 3 次，支持手动全量刷新"
+  },
+  "claude_permissions": {
     "allow": [
       "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)",
       "Bash(wc:*)", "Bash(find:*)", "Bash(tree:*)", "Bash(which:*)", "Bash(where:*)",
@@ -14,13 +27,14 @@
       "Bash(eslint:*)", "Bash(prettier:*)", "Bash(biome:*)", "Bash(oxlint:*)", "Bash(coverage:*)",
       "Bash(cargo:*)", "Bash(go:*)", "Bash(rustc:*)",
       "Bash(curl:*)", "Bash(jq:*)", "Bash(sed:*)", "Bash(awk:*)",
-      "Bash(sort:*)", "Bash(uniq:*)", "Bash(sqlite3:*)", "Bash(psql:*)", "Bash(mysql:*)",
+      "Bash(sort:*)", "Bash(uniq:*)", "Bash(sqlite3:*)",
       "Read", "Write", "Edit"
     ],
     "ask": [
       "Bash(git push:*)", "Bash(git merge:*)", "Bash(git rebase:*)",
       "Bash(git reset --hard:*)", "Bash(git clean:*)",
       "Bash(rm:*)", "Bash(rmdir:*)", "Bash(mv:*)", "Bash(cp:*)",
+      "Bash(psql:*)", "Bash(mysql:*)",
       "Bash(docker:*)", "Bash(npm publish:*)", "Bash(docker push:*)",
       "Bash(kubectl:*)", "Bash(helm:*)", "Bash(terraform:*)",
       "Bash(chmod:*)", "Bash(chown:*)"
@@ -30,6 +44,5 @@
       "Bash(sudo rm -rf:*)", "Bash(sudo:*)", "Bash(mkfs:*)", "Bash(dd if=:*)",
       "Bash(chmod 777:*)", "Bash(curl|sh:*)"
     ]
-  },
-  "skillsPath": ".claude/skills"
+  }
 }

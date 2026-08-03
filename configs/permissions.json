@@ -1,0 +1,74 @@
+{
+  "_comment": "Solo Dev Autopilot — 三级危险度权限模型（Phase 3 唯一事实源）",
+  "_usage": "权限设计的唯一事实源。configs/tool-presets/*.json 与 configs/modes/*.json 均由本文件推导。修改权限先改这里，再同步各预置。",
+  "_mapping": {
+    "safe": "Claude Code allow → 自动放行，无需确认",
+    "ask": "Claude Code ask → 首次提示确认，记住选择",
+    "danger": "Claude Code deny 兜底 + ask 强化 → 每次都确认并展示命令摘要"
+  },
+  "levels": {
+    "safe": {
+      "description": "只读与常规开发命令：自动放行",
+      "file_ops": ["Read", "Write", "Edit"],
+      "commands": [
+        "git status", "git diff", "git log", "git branch", "git show",
+        "git add", "git commit", "git checkout", "git stash", "git restore",
+        "npm", "pnpm", "bun", "npx", "node", "tsc", "tsx",
+        "python", "python3", "pip", "uv", "poetry",
+        "pytest", "vitest", "jest", "cargo test", "go test",
+        "eslint", "prettier", "biome", "oxlint", "coverage",
+        "cat", "ls", "grep", "find", "head", "tail", "wc",
+        "jq", "sed", "awk", "sort", "uniq",
+        "curl", "docker", "sqlite3", "psql", "mysql",
+        "echo", "pwd", "env", "file", "stat", "which", "where", "tree"
+      ]
+    },
+    "ask": {
+      "description": "有副作用但可恢复的命令：首次提示确认",
+      "commands": [
+        "rm", "mv", "cp", "rmdir",
+        "git push", "git merge", "git rebase", "git reset --hard", "git clean",
+        "npm publish", "docker push",
+        "kubectl", "helm", "terraform",
+        "chmod", "chown"
+      ]
+    },
+    "danger": {
+      "description": "破坏性或不可恢复命令：每次都确认 + 命令摘要预览（参考 alfred-dev：生产部署永远人工确认）",
+      "commands": [
+        "rm -rf /", "rm -rf ~", "rm -rf /*", "sudo rm -rf",
+        "sudo", "mkfs", "dd if=", "chmod 777", "curl|sh"
+      ]
+    }
+  },
+  "recommended_allow": [
+    "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)",
+    "Bash(wc:*)", "Bash(find:*)", "Bash(tree:*)", "Bash(which:*)", "Bash(where:*)",
+    "Bash(echo:*)", "Bash(pwd)", "Bash(env)", "Bash(file:*)", "Bash(stat:*)",
+    "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)", "Bash(git branch:*)",
+    "Bash(git show:*)", "Bash(git add:*)", "Bash(git commit:*)", "Bash(git checkout:*)",
+    "Bash(git stash:*)", "Bash(git restore:*)",
+    "Bash(npm:*)", "Bash(pnpm:*)", "Bash(bun:*)", "Bash(npx:*)", "Bash(node:*)",
+    "Bash(tsc:*)", "Bash(tsx:*)",
+    "Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)", "Bash(uv:*)", "Bash(poetry:*)",
+    "Bash(pytest:*)", "Bash(vitest:*)", "Bash(jest:*)", "Bash(cargo test:*)", "Bash(go test:*)",
+    "Bash(eslint:*)", "Bash(prettier:*)", "Bash(biome:*)", "Bash(oxlint:*)", "Bash(coverage:*)",
+    "Bash(cargo:*)", "Bash(go:*)", "Bash(rustc:*)",
+    "Bash(curl:*)", "Bash(jq:*)", "Bash(sed:*)", "Bash(awk:*)",
+    "Bash(sort:*)", "Bash(uniq:*)", "Bash(sqlite3:*)", "Bash(psql:*)", "Bash(mysql:*)",
+    "Read", "Write", "Edit"
+  ],
+  "recommended_ask": [
+    "Bash(git push:*)", "Bash(git merge:*)", "Bash(git rebase:*)",
+    "Bash(git reset --hard:*)", "Bash(git clean:*)",
+    "Bash(rm:*)", "Bash(rmdir:*)", "Bash(mv:*)", "Bash(cp:*)",
+    "Bash(npm publish:*)", "Bash(docker push:*)",
+    "Bash(kubectl:*)", "Bash(helm:*)", "Bash(terraform:*)",
+    "Bash(chmod:*)", "Bash(chown:*)"
+  ],
+  "recommended_deny": [
+    "Bash(rm -rf /:*)", "Bash(rm -rf ~:*)", "Bash(rm -rf /*:*)",
+    "Bash(sudo rm -rf:*)", "Bash(mkfs:*)", "Bash(dd if=:*)",
+    "Bash(sudo:*)", "Bash(chmod 777:*)", "Bash(curl|sh:*)"
+  ]
+}

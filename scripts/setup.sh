@@ -336,25 +336,58 @@ configure_mcp_cursor() {
   info "在 Cursor Settings → MCP 中添加服务器"
 }
 
+# ---- 选择配置模式 ----
+choose_mode() {
+  info ""
+  info "选择配置模式（决定权限严格度与 hook 行为）:"
+  info "  1) toy         — 新手/实验：几乎不确认，P0 只警告不阻止"
+  info "  2) team        — 小团队（默认）：危险操作确认，P0 阻止提交"
+  info "  3) production  — 上线项目：最严格，生产库二次确认"
+  read -rp "选择 (1/2/3) [默认: 2] " mode_choice
+  case "${mode_choice:-2}" in
+    1) MODE="toy" ;;
+    3) MODE="production" ;;
+    *) MODE="team" ;;
+  esac
+  echo "$MODE" > "${TARGET_DIR}/.autopilot-mode"
+  success "配置模式: ${MODE}（已写入 .autopilot-mode，hook 据此调整严格度）"
+}
+
 # ---- 设置 Git Hooks ----
 setup_git_hooks() {
   info ""
-  info "配置 Git Hooks（可选）..."
-  read -rp "是否启用自动代码地图更新 hook？(y/n) [默认: y] " enable_hooks
+  info "配置 Git Hooks（P0 检查 + 推送前检查）..."
+  read -rp "是否安装 git hooks（pre-commit 质量门 / pre-push 提醒）？(y/n) [默认: y] " enable_hooks
   enable_hooks=${enable_hooks:-y}
   
   if [[ "$enable_hooks" =~ ^[Yy] ]]; then
     local hooks_dir="${TARGET_DIR}/.git/hooks"
-    mkdir -p "$hooks_dir"
+    if [ ! -d "$hooks_dir" ]; then
+      warn "目标目录还不是 Git 仓库，先初始化再安装 hooks"
+      return
+    fi
     
-    # Post-commit hook: 更新代码地图
-    cat > "${hooks_dir}/post-commit" << 'HOOK'
-#!/bin/bash
-# Solo Dev Autopilot: 提交后提示更新代码地图
-echo "🗺️  提示：运行 '/skill context-map' 更新代码地图以保持上下文同步"
-HOOK
-    chmod +x "${hooks_dir}/post-commit"
-    success "Git post-commit hook 已安装"
+    # 备份已有 hook（不覆盖用户已有配置）
+    local backup_dir="${TARGET_DIR}/.git/hooks-backup"
+    for hook_name in pre-commit pre-push; do
+      local existing="${hooks_dir}/${hook_name}"
+      if [ -f "$existing" ] && ! head -1 "$existing" | grep -q "Solo Dev Autopilot" 2>/dev/null; then
+        mkdir -p "$backup_dir"
+        cp "$existing" "${backup_dir}/${hook_name}.$(date +%Y%m%d%H%M%S)"
+        warn "已有 ${hook_name} 已备份到 ${backup_dir}/"
+      fi
+    done
+    
+    # 安装模板 hooks
+    cp "${REPO_ROOT}/templates/pre-commit-hook" "${hooks_dir}/pre-commit"
+    chmod +x "${hooks_dir}/pre-commit"
+    success "pre-commit 已安装（P0 检查，严格度: ${MODE}）"
+    
+    if [ -f "${REPO_ROOT}/templates/pre-push-hook" ]; then
+      cp "${REPO_ROOT}/templates/pre-push-hook" "${hooks_dir}/pre-push"
+      chmod +x "${hooks_dir}/pre-push"
+      success "pre-push 已安装（推送前检查）"
+    fi
   fi
 }
 
@@ -401,9 +434,13 @@ print_summary() {
   echo "   6. 启动你的 AI 编程工具"
   echo "   7. 说: '读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md'"
   echo ""
+  echo "⚙️  配置模式: ${MODE}（toy=宽松 / team=标准 / production=严格）"
+  echo "   .autopilot-mode 已写入，切换模式: echo 'production' > .autopilot-mode"
+  echo ""
   echo "📖 文档:"
   echo "   完整入门指南 → ${REPO_ROOT}/docs/getting-started.md"
   echo "   新手避坑手册 → ${REPO_ROOT}/docs/newbie-pitfalls.md"
+  echo "   生产上线清单 → ${REPO_ROOT}/docs/production-checklist.md"
   echo "   v2 开发蓝图   → ${REPO_ROOT}/docs/BLUEPRINT-v2.md"
   echo ""
   echo "💡 常用命令:"
@@ -413,6 +450,10 @@ print_summary() {
   echo "   /skill code-review       — 代码审查"
   echo "   /skill commit-helper     — 生成提交信息"
   echo "   /skill deploy-gate       — 部署门禁（人工确认红线）"
+  echo "   /skill test-runner       — 测试闭环（覆盖率）"
+  echo "   /skill ci-helper         — CI 配置与排障"
+  echo "   /skill observability     — 日志/Sentry/健康检查"
+  echo "   /skill production-preflight — 上线前预检"
   echo "   /skill troubleshoot      — 问题排查"
   echo ""
 }
@@ -427,12 +468,13 @@ main() {
   echo ""
   
   detect_environment
+  choose_mode
   install_skills
   install_superpowers
   install_templates
   configure_mcp
-  setup_git_hooks
   init_git
+  setup_git_hooks
   print_summary
 }
 

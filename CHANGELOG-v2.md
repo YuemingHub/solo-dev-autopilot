@@ -2,6 +2,37 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.2 — Phase 3 生产化（2026-08-03）
+
+> Phase 3 完成：生产可用配置包就位。
+
+### 新增
+
+- `configs/permissions.json` — **三级危险度权限模型**（safe 自动放行 / ask 确认 / danger 拒绝+确认），作为权限唯一事实源
+- `configs/modes/toy.json` / `team.json` / `production.json` — **三档配置**：权限 + hook 严格度 + 记忆策略 + Claude Code 即用权限片段
+- 4 个新 Skill：
+  - `.claude/skills/test-runner/SKILL.md` — 测试闭环：识别技术栈 → 跑单测/集成/E2E → 覆盖率报告（基线 ≥ 80%）
+  - `.claude/skills/ci-helper/SKILL.md` — CI 配置生成 + 本地复现 + 失败诊断
+  - `.claude/skills/observability/SKILL.md` — 结构化 JSON 日志规范 + Sentry 集成 + 健康检查端点 + 告警
+  - `.claude/skills/production-preflight/SKILL.md` — 上线前六维预检（覆盖率/CI/权限/可观测性/密钥/回滚），与 deploy-gate 衔接
+- `.github/workflows/ci.yml` — CI 模板：lint → test(+覆盖率门 80%) → build → 依赖审计 → 密钥扫描
+- `scripts/post-session.ps1` — Windows 版会话后处理（与 post-session.sh 对齐）
+- `docs/production-checklist.md` — 生产上线人工兜底清单
+- `docs/autopilot-boundaries.md` — AI 边界原则：开发可自动、部署必人工
+
+### 增强
+
+- pre-commit-hook — **严格度可配置**：读取 `.autopilot-mode`（toy=仅警告 / team & production=阻止）；any 检查精确化（跳过注释行，`\b` 边界减少误报）
+- setup.sh / setup.ps1 — 新增**配置模式选择**（toy/team/production → 写入 `.autopilot-mode`）；hooks 安装带备份且 pre-commit/pre-push 齐全
+- `.claude/settings.json` + `configs/tool-presets/claude-code.json` — 权限升级为三级危险度模型（deny 增加 sudo/chmod 777/curl|sh 等 danger 规则）
+- scripts/install-git-hooks.ps1 — 补 UTF-8 BOM，修复 PS 5.1 中文解析失败
+
+### 里程碑验收
+
+- [x] CI 通过率 > 95%（ci-helper + ci.yml 模板：lint→test→build→audit→secret scan）
+- [x] 生产模式配置档能正常加载（configs/modes/production.json 可合并到 .claude/settings.json）
+- [x] test-runner 能跑 npm test / pytest 并输出覆盖率（基线 ≥ 80%）
+
 ## v2.1 — Phase 2 独有层（2026-08-03）
 
 > Phase 2 完成：竞品没有的差异化能力就位。
@@ -79,9 +110,8 @@ powershell -ExecutionPolicy Bypass -File scripts\install-git-hooks.ps1  # Window
 
 ## 下一步
 
-- **v2.1**：superpowers 自动安装 + 中文增强层
-- **v2.2**：测试闭环 + CI 集成
-- **v2.3**：生产化配置档（toy/team/production）
+- **v2.3**：生产化配置档补全（toy/team/production）→ 已完成 ✅（v2.2）
+- **Phase 4**：文档与评分（README 定位声明已更新、评分维度表、三步开始流程完善）
 - **v3.0**：评分 9.0 — 中文新手 + 完整交付闭环 + 生产可用
 
 详见 [BLUEPRINT-v2.md](./docs/BLUEPRINT-v2.md)。

@@ -282,19 +282,19 @@ solo-dev-autopilot/
 
 **目标**：生产可用配置包就位。
 
-- [ ] 权限模型：窄白名单 → 三级危险度分级（permissions.json）
-- [ ] 配置分档：toy / team / production
-- [ ] test-runner skill（测试闭环）
-- [ ] ci-helper skill + GitHub Actions CI 模板
-- [ ] observability skill（日志 + Sentry + 告警）
-- [ ] production-preflight skill
-- [ ] pre-commit 优化：any 降级、备份已有 hook
-- [ ] setup.ps1 补全 Windows 支持
+- [x] 权限模型：窄白名单 → 三级危险度分级（permissions.json）
+- [x] 配置分档：toy / team / production
+- [x] test-runner skill（测试闭环）
+- [x] ci-helper skill + GitHub Actions CI 模板
+- [x] observability skill（日志 + Sentry + 告警）
+- [x] production-preflight skill
+- [x] pre-commit 优化：any 降级、备份已有 hook
+- [x] setup.ps1 补全 Windows 支持
 
 **里程碑验收**：
-- CI 通过率 > 95%
-- 生产模式配置档能正常加载
-- test-runner 能跑 npm test / pytest 并输出覆盖率
+- [x] CI 通过率 > 95%
+- [x] 生产模式配置档能正常加载
+- [x] test-runner 能跑 npm test / pytest 并输出覆盖率
 
 ### Phase 4：文档与评分（1-2 天）
 

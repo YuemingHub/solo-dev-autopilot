@@ -66,22 +66,28 @@ solo-dev-autopilot/
 ├── BOOTSTRAP-PROMPT.md                ← 首次启动引导
 │
 ├── .claude/                           ← 🧠 Claude Code 原生适配（v2 新增）
-│   ├── settings.json                  │   三级权限模型（auto-allow / ask / deny）
+│   ├── settings.json                  │   三级危险度权限模型（auto-allow / ask / deny）
 │   ├── plugin/marketplace.json        │   插件市场注册（v2 新增）
 │   └── skills/                        │   官方 SKILL.md 格式技能（Claude Code 自动识别）
 │       ├── api-designer/SKILL.md      │   API 接口设计
+│       ├── ci-helper/SKILL.md         │   CI 配置与排障（v2.1 新增）
 │       ├── code-review/SKILL.md       │   P0-P3 分级代码审查
 │       ├── commit-helper/SKILL.md     │   智能 Commit 信息
 │       ├── context-map/SKILL.md       │   代码地图（会话恢复核心）
 │       ├── deploy-gate/SKILL.md       │   部署门禁（人工确认红线）
 │       ├── fullstack-scaffold/SKILL.md│   全栈脚手架生成
+│       ├── observability/SKILL.md     │   日志/Sentry/健康检查（v2.1 新增）
 │       ├── onboarding/SKILL.md        │   首次使用引导（装 superpowers）
+│       ├── production-preflight/SKILL.md │ 上线前预检（v2.1 新增）
 │       ├── task-planner/SKILL.md      │   目标拆解与防漂移
+│       ├── test-runner/SKILL.md       │   测试闭环 + 覆盖率（v2.1 新增）
 │       └── troubleshoot/SKILL.md      │   新手问题排查
 │
 ├── skills/                            ← ⚠️ v1 源文件（已迁移至 .claude/skills/）
 │
 ├── configs/                           ← ⚙️ 各工具的预设配置
+│   ├── permissions.json               │   三级危险度权限模型（唯一事实源，v2.1 新增）
+│   ├── modes/                         │   三档配置：toy / team / production（v2.1 新增）
 │   ├── mcp-servers.json              │   MCP 服务器推荐配置
 │   └── tool-presets/                  │   各工具适配配置
 │       ├── claude-code.json          │   三级权限 + MCP + skillsPath
@@ -90,10 +96,9 @@ solo-dev-autopilot/
 │       └── reasonix.json             │   三级权限 + hooks
 │
 ├── scripts/                           ← 🔧 自动化脚本
-│   ├── setup.sh / setup.ps1          │   一键安装（macOS/Linux/Windows）
-│   ├── post-session.sh               │   会话结束自动化（代码地图+记忆更新）
-│   ├── install-git-hooks.sh          │   Git Hooks 安装（带备份）
-│   ├── install-git-hooks.ps1         │   Git Hooks 安装（Windows）
+│   ├── setup.sh / setup.ps1          │   一键安装（macOS/Linux/Windows + 模式选择）
+│   ├── post-session.sh / post-session.ps1 │ 会话结束自动化（v2.1 新增 Windows 版）
+│   ├── install-git-hooks.sh / .ps1   │   Git Hooks 安装（带备份）
 │   └── auto-evolve.sh                │   社区方案搜索
 │
 ├── templates/                         ← 📝 项目模板
@@ -101,7 +106,7 @@ solo-dev-autopilot/
 │   ├── ONBOARDING-template.md        │   新人引导模板
 │   ├── PROJECT-MEMORY-template.md    │   项目记忆模板
 │   ├── SESSION_DRIVER-template.md    │   会话驱动模板
-│   ├── pre-commit-hook               │   P0 阻止 + P1 警告
+│   ├── pre-commit-hook               │   P0 检查（严格度随模式调整，v2.1 优化）
 │   ├── pre-push-hook                 │   推送前审查提醒
 │   ├── gitignore                     │   推荐 .gitignore
 │   └── env-example.env               │   环境变量模板
@@ -109,9 +114,12 @@ solo-dev-autopilot/
 ├── docs/                              ← 📚 文档
 │   ├── BLUEPRINT-v2.md               │   v2 开发蓝图（14 章 + 附录）
 │   ├── getting-started.md            │   详细入门指南
-│   └── newbie-pitfalls.md            │   新手避坑手册
+│   ├── newbie-pitfalls.md            │   新手避坑手册
+│   ├── production-checklist.md       │   生产上线清单（v2.1 新增）
+│   └── autopilot-boundaries.md       │   AI 边界原则（v2.1 新增）
 │
 └── .github/workflows/                ← ⚡ GitHub Actions
+    ├── ci.yml                        │   CI 模板：lint→test→build→审计→密钥扫描（v2.1 新增）
     └── auto-evolve.yml               │   每周自动搜索社区方案
 ```
 ## 🔧 核心 Skill 说明
@@ -163,8 +171,25 @@ solo-dev-autopilot/
 | commit-helper | 分析改动生成 Conventional Commits | `/skill commit-helper` |
 | onboarding | 首次使用引导（装 superpowers） | `/skill onboarding` |
 | deploy-gate | 部署门禁：检查 + 人工确认红线 | `/skill deploy-gate` |
+| test-runner | 测试闭环：跑单测/集成/E2E + 覆盖率 | `/skill test-runner` |
+| ci-helper | CI 配置生成与失败诊断 | `/skill ci-helper` |
+| observability | 结构化日志 + Sentry + 健康检查 + 告警 | `/skill observability` |
+| production-preflight | 上线前预检：覆盖率/CI/权限/可观测性/密钥/回滚 | `/skill production-preflight` |
 | troubleshoot | 根据错误信息自动排查原因 | `/skill troubleshoot <错误信息>` |
 | api-designer | 设计 API 接口并生成文档 | `/skill api-designer` |
+
+## ⚙️ 配置模式（toy / team / production）
+
+安装时（`setup.sh` / `setup.ps1`）选择模式，写入 `.autopilot-mode`，决定权限严格度与 hook 行为：
+
+| 档位 | 权限 | hook 严格度 | 记忆策略 | 适合谁 |
+|------|------|-----------|---------|--------|
+| toy | 宽松白名单，几乎不确认 | pre-commit: 仅警告 | 全量加载 | 第一次用 AI 编程的人 |
+| team | 三级危险度分级 | pre-commit: P0 阻止提交 | 摘要 + 按需加载 | 小团队协作 |
+| production | 分级 + 生产库二次确认 | P0 阻止 + pre-push 全量检查 | 摘要 + 裁剪 + 归档 | 上线项目 |
+
+切换模式：`echo 'production' > .autopilot-mode`（hook 下次运行时生效）。
+完整权限定义见 `configs/permissions.json` 与 `configs/modes/`。
 
 ## 🔌 推荐 MCP 配置
 
@@ -214,9 +239,11 @@ solo-dev-autopilot/
 我们预埋了以下保护机制：
 
 - ✅ **编辑门控**：默认 auto 模式（5秒撤销窗口），防止误操作
-- ✅ **权限白名单**：只允许安全的 shell 命令，危险操作需要确认
+- ✅ **三级危险度权限**：safe 自动放行 / ask 确认 / danger 拒绝+确认（`configs/permissions.json`）
 - ✅ **自动格式化**：每次保存文件后自动 format/lint
 - ✅ **部署门禁**：部署前自动检查（环境变量/依赖/构建/CI/密钥扫描）+ **人工确认红线**（生产部署不可自动跳过）
+- ✅ **上线预检**：production-preflight 检查覆盖率/CI/权限/可观测性/密钥/回滚（`docs/production-checklist.md`）
+- ✅ **AI 边界明确**：开发可自动、部署必人工（`docs/autopilot-boundaries.md`）
 - ✅ **常见问题库**：`troubleshoot.md` 覆盖 50+ 新手高频问题
 
 ## 📊 设计原则

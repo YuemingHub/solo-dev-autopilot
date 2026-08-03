@@ -1,12 +1,25 @@
 {
-  "permissions": {
+  "name": "toy",
+  "label": "Toy 玩具模式",
+  "description": "第一次用 AI 编程的人：怎么简单怎么来，几乎不打断。",
+  "audience": "新手 / 个人实验项目 / 不想被确认弹窗烦的人",
+  "permission_tier": "宽松白名单（safe 全量 + ask 大部分直接放行，只拦截 danger）",
+  "hooks": {
+    "pre_commit": "warning-only",
+    "pre_push": "disabled"
+  },
+  "memory": {
+    "strategy": "full",
+    "description": "全量加载：不裁剪，上下文简单直接"
+  },
+  "claude_permissions": {
     "allow": [
       "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(head:*)", "Bash(tail:*)",
       "Bash(wc:*)", "Bash(find:*)", "Bash(tree:*)", "Bash(which:*)", "Bash(where:*)",
       "Bash(echo:*)", "Bash(pwd)", "Bash(env)", "Bash(file:*)", "Bash(stat:*)",
       "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)", "Bash(git branch:*)",
       "Bash(git show:*)", "Bash(git add:*)", "Bash(git commit:*)", "Bash(git checkout:*)",
-      "Bash(git stash:*)", "Bash(git restore:*)",
+      "Bash(git stash:*)", "Bash(git restore:*)", "Bash(git push:*)",
       "Bash(npm:*)", "Bash(pnpm:*)", "Bash(bun:*)", "Bash(npx:*)", "Bash(node:*)",
       "Bash(tsc:*)", "Bash(tsx:*)",
       "Bash(python:*)", "Bash(python3:*)", "Bash(pip:*)", "Bash(uv:*)", "Bash(poetry:*)",
@@ -15,13 +28,12 @@
       "Bash(cargo:*)", "Bash(go:*)", "Bash(rustc:*)",
       "Bash(curl:*)", "Bash(jq:*)", "Bash(sed:*)", "Bash(awk:*)",
       "Bash(sort:*)", "Bash(uniq:*)", "Bash(sqlite3:*)", "Bash(psql:*)", "Bash(mysql:*)",
+      "Bash(docker:*)", "Bash(rm:*)", "Bash(mv:*)", "Bash(cp:*)", "Bash(rmdir:*)",
       "Read", "Write", "Edit"
     ],
     "ask": [
-      "Bash(git push:*)", "Bash(git merge:*)", "Bash(git rebase:*)",
-      "Bash(git reset --hard:*)", "Bash(git clean:*)",
-      "Bash(rm:*)", "Bash(rmdir:*)", "Bash(mv:*)", "Bash(cp:*)",
-      "Bash(docker:*)", "Bash(npm publish:*)", "Bash(docker push:*)",
+      "Bash(git reset --hard:*)", "Bash(git clean:*)", "Bash(git merge:*)", "Bash(git rebase:*)",
+      "Bash(npm publish:*)", "Bash(docker push:*)",
       "Bash(kubectl:*)", "Bash(helm:*)", "Bash(terraform:*)",
       "Bash(chmod:*)", "Bash(chown:*)"
     ],
@@ -30,6 +42,5 @@
       "Bash(sudo rm -rf:*)", "Bash(sudo:*)", "Bash(mkfs:*)", "Bash(dd if=:*)",
       "Bash(chmod 777:*)", "Bash(curl|sh:*)"
     ]
-  },
-  "skillsPath": ".claude/skills"
+  }
 }

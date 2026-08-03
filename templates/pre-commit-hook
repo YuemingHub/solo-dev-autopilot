@@ -1,7 +1,12 @@
-#!/usr/bin/env bash
-# Solo Dev Autopilot — pre-commit P0/P1 检查
-# P0: 阻止提交（硬编码密钥、空 catch、.env 暂存）
-# P1: 警告但不阻止（裸 any 类型、console.log 残留）
+#!/bin/sh
+# Solo Dev Autopilot — pre-commit P0/P1 检查（严格度可配置）
+# P0: 硬编码密钥、空 catch、.env 暂存（默认阻止提交）
+# P1: 裸 any 类型、console.log 残留（警告但不阻止）
+#
+# 严格度（通过环境变量 HOOK_STRICTNESS 或 .autopilot-mode 文件控制）:
+#   toy        → P0 降级为警告，不阻止提交（warning-only）
+#   team       → P0 阻止提交（默认）
+#   production → P0 阻止提交（pre-push 的全量检查由 pre-push-hook 负责）
 
 set -e
 
@@ -9,6 +14,24 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
+
+info()  { printf '%b' "${YELLOW}[pre-commit]${NC} $*" ; printf '\n'; }
+ok()    { printf '%b' "${GREEN}[pre-commit]${NC} $*" ; printf '\n'; }
+warn()  { printf '%b' "${YELLOW}[pre-commit]${NC} $*" ; printf '\n'; }
+err()   { printf '%b' "${RED}[pre-commit]${NC} $*" ; printf '\n'; }
+
+# ---- 严格度解析 ----
+PROJECT_ROOT="$(pwd)"
+STRICTNESS="${HOOK_STRICTNESS:-}"
+if [ -z "$STRICTNESS" ] && [ -f "${PROJECT_ROOT}/.autopilot-mode" ]; then
+  STRICTNESS="$(cat "${PROJECT_ROOT}/.autopilot-mode" | tr -d '[:space:]')"
+fi
+STRICTNESS="${STRICTNESS:-team}"
+
+BLOCK_ON_P0=true
+if [ "$STRICTNESS" = "toy" ]; then
+  BLOCK_ON_P0=false
+fi
 
 errors=0
 warnings=0
@@ -19,14 +42,14 @@ if [ -z "$staged_files" ]; then
   exit 0
 fi
 
-echo -e "${YELLOW}[pre-commit]${NC} 运行检查..."
+info "运行检查（严格度: ${STRICTNESS}）..."
 
 # ---- P0: 阻止提交 ----
 
 # P0-1: 硬编码密钥
 for file in $staged_files; do
   if git diff --cached -- "$file" | grep -iE "(password|secret|api_key|apikey|token)\s*[:=]\s*[\"'][^\"']{8,}" 2>/dev/null; then
-    echo -e "${RED}[P0] 检测到可能的硬编码密钥：${file}${NC}"
+    err "[P0] 检测到可能的硬编码密钥：${file}"
     errors=$((errors + 1))
   fi
 done
@@ -34,24 +57,26 @@ done
 # P0-2: 空 catch 块
 for file in $staged_files; do
   if git diff --cached -- "$file" | grep -E "^\+.*catch\s*\([^)]*\)\s*\{\s*\}" 2>/dev/null; then
-    echo -e "${RED}[P0] 检测到空 catch 块：${file}${NC}"
+    err "[P0] 检测到空 catch 块：${file}"
     errors=$((errors + 1))
   fi
 done
 
 # P0-3: .env 被暂存
 if git diff --cached --name-only | grep -qE "^\.env$"; then
-  echo -e "${RED}[P0] .env 文件被暂存了！请加入 .gitignore${NC}"
+  err "[P0] .env 文件被暂存了！请加入 .gitignore"
   errors=$((errors + 1))
 fi
 
 # ---- P1: 警告但不阻止 ----
 
-# P1-1: 裸 any 类型（仅 TS/TSX，精确匹配减少误报）
+# P1-1: 裸 any 类型（仅 TS/TSX；跳过注释行与文档行，减少误报）
 for file in $staged_files; do
   if echo "$file" | grep -qE "\.(ts|tsx)$"; then
-    if git diff --cached -- "$file" | grep -E "^\+.*:\s*any[^a-zA-Z]" 2>/dev/null; then
-      echo -e "${YELLOW}[P1] 检测到 any 类型：${file}（建议用 unknown 或具体类型）${NC}"
+    if git diff --cached -- "$file" | grep -E "^\+" \
+      | grep -vE "^\+[[:space:]]*(//|\*|/\*|#)" \
+      | grep -E ":\s*any\b" 2>/dev/null; then
+      warn "[P1] 检测到 any 类型：${file}（建议用 unknown 或具体类型）"
       warnings=$((warnings + 1))
     fi
   fi
@@ -61,7 +86,7 @@ done
 for file in $staged_files; do
   if echo "$file" | grep -qE "\.(ts|tsx|js|jsx)$"; then
     if git diff --cached -- "$file" | grep -E "^\+.*console\.log" 2>/dev/null; then
-      echo -e "${YELLOW}[P1] 检测到 console.log：${file}（生产代码建议移除）${NC}"
+      warn "[P1] 检测到 console.log：${file}（生产代码建议移除或改结构化日志）"
       warnings=$((warnings + 1))
     fi
   fi
@@ -69,14 +94,19 @@ done
 
 # ---- 结果 ----
 if [ "$warnings" -gt 0 ]; then
-  echo -e "${YELLOW}[pre-commit] ${warnings} 个 P1 警告（不影响提交）${NC}"
+  warn "${warnings} 个 P1 警告（不影响提交）"
 fi
 
 if [ "$errors" -gt 0 ]; then
-  echo -e "${RED}[pre-commit] 发现 ${errors} 个 P0 问题，提交已阻止。${NC}"
-  echo -e "${YELLOW}修复后重新提交：git add <文件> && git commit${NC}"
-  exit 1
+  if [ "$BLOCK_ON_P0" = "true" ]; then
+    err "发现 ${errors} 个 P0 问题，提交已阻止。"
+    warn "修复后重新提交：git add <文件> && git commit"
+    exit 1
+  else
+    warn "发现 ${errors} 个 P0 问题（toy 模式：仅警告，不阻止）"
+    warn "提示：切换 team/production 模式可让 P0 阻止提交"
+  fi
 fi
 
-echo -e "${GREEN}[pre-commit] 检查通过（${warnings} 警告, 0 阻止）${NC}"
+ok "检查通过（${warnings} 警告, 0 阻止）"
 exit 0

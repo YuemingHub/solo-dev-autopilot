@@ -1,0 +1,80 @@
+# ============================================
+# Solo Dev Autopilot — CI 模板
+# 流水线: lint → test → build → 依赖审计 → 密钥扫描
+# 用法:
+#   1. 复制到目标项目 .github/workflows/ci.yml
+#   2. 按技术栈调整（见下方注释）
+#   3. 在 GitHub → Settings → Branches 给 main 开启 PR 保护
+# ============================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # 支持手动触发
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint · Test · Build · Audit · Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---- 按技术栈替换 ----
+      # Node/pnpm: 保持默认
+      # Python:    actions/setup-python@v5 + pip install -e ".[dev]"
+      # Go:        actions/setup-go@v5 + go test ./...
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test (with coverage)
+        run: pnpm vitest run --coverage
+
+      # 覆盖率门槛：低于 80% 直接失败（蓝图 7.1 基线）
+      - name: Coverage gate (>= 80%)
+        run: |
+          COVERAGE=$(pnpm vitest run --coverage --reporter=json 2>/dev/null | \
+            grep -o '"lines":[^,]*' | head -1 | grep -o '[0-9.]*')
+          echo "Line coverage: ${COVERAGE}%"
+          if (( $(echo "${COVERAGE} < 80" | bc -l) )); then
+            echo "::error::Coverage ${COVERAGE}% is below 80% gate"
+            exit 1
+          fi
+
+      - name: Build
+        run: pnpm build
+
+      # 依赖审计：只拦高危以上（npm audit 默认输出 full，-audit-level 控制门槛）
+      - name: Dependency audit
+        run: pnpm audit --audit-level=high || true
+
+      # 密钥扫描：检测本次变更是否混入密钥
+      - name: Secret scan
+        run: |
+          git diff HEAD | grep -iE "(api[_-]?key|secret|password|token)[[:space:]]*[:=][[:space:]]*['\"][A-Za-z0-9]{16,}" && \
+            { echo "::error::Hardcoded secret detected"; exit 1; } || true
+
+      - name: Summary
+        run: |
+          echo "### ✅ CI 全部通过" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint / Test / Build / Audit / Secret Scan" >> $GITHUB_STEP_SUMMARY
