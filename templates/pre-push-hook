@@ -1,0 +1,11 @@
+?#!/usr/bin/env bash
+# Solo Dev Autopilot - pre-push ????
+
+YELLOW="\033[1;33m"
+GREEN="\033[0;32m"
+NC="\033[0m"
+
+echo -e "${YELLOW}[pre-push] ??:???????????${NC}"
+echo -e "${YELLOW}  ? AI ?: review ?? ? /skill code-review${NC}"
+echo -e "${GREEN}[pre-push] ????...${NC}"
+exit 0
