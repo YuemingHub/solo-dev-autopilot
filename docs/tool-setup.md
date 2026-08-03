@@ -178,7 +178,7 @@ cp -r templates/PROJECT-MEMORY-template.md your-project/PROJECT-MEMORY.md
 
 # 完整集（含 hooks + CI）
 cp -r templates/ your-project/
-cp -r .github/workflows/ci.yml your-project/.github/workflows/
+cp -r templates/ci-node.yml your-project/.github/workflows/ci.yml
 bash scripts/install-git-hooks.sh      # 或 install-git-hooks.ps1
 ```
 

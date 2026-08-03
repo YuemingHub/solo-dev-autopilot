@@ -231,8 +231,10 @@ solo-dev-autopilot/
 │   └── install-git-hooks.sh           ← 改：加备份
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml                     ← 新增：CI 模板
+│       ├── ci.yml                     ← 新增：仓库自检（JSON/SKILL.md/shell）
 │       └── auto-evolve.yml            ← 保留
+├── templates/
+│   └── ci-node.yml                    ← 新增：Node 项目 CI 模板（给用户复制）
 └── docs/
     ├── BLUEPRINT-v2.md                ← 本文件
     ├── getting-started.md             ← 保留

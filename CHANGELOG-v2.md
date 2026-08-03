@@ -2,6 +2,21 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.3.1 — CI 自检修复（2026-08-03）
+
+> 修复：本仓库的 CI 不能跑 Node 模板（仓库本身没有 package.json）。
+
+### 变更
+
+- `.github/workflows/ci.yml` — 从「Node 项目 CI 模板」改为「仓库自检」：JSON 有效性 / SKILL.md 格式 / Shell 语法
+- `scripts/ci-self-check.sh` — 自检脚本（新增），本地可跑、CI 复用同一脚本；纯 POSIX（兼容 Git for Windows 迷你 sh）
+- `templates/ci-node.yml` — Node 项目 CI 模板（新增），供用户复制到自己的项目；ci-helper skill / README / 蓝图 / tool-setup / scoring 引用同步更新
+
+### 为什么
+
+原 ci.yml 带 `on: push` 触发器，但本仓库无 package.json，`pnpm install` 必失败——推送后 Actions 必红。
+现在本仓库 CI 验证自己的产品（配置包），用户 CI 用模板，各归其位。
+
 ## v2.3 — Phase 4 文档与评分（2026-08-03）
 
 > Phase 4 完成：评分 9 分有理有据。

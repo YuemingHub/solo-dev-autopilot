@@ -87,7 +87,8 @@
 
 | 评分点 | 实物证据 |
 |--------|---------|
-| CI 模板 | `.github/workflows/ci.yml` — lint→test→build→audit→secret scan |
+| CI 模板 | `templates/ci-node.yml` — lint→test→build→audit→secret scan（复制到你的项目） |
+| 本仓库 CI | `.github/workflows/ci.yml` — 自检 JSON/SKILL.md/shell（`scripts/ci-self-check.sh`） |
 | 覆盖率门 | test-runner 基线 ≥ 80%，ci.yml 覆盖率检查 |
 | 测试 skill | test-runner（npm test / pytest 自动识别 + 覆盖率报告） |
 | 本地复现 | ci-helper 支持本地复现 CI 失败 |

@@ -27,7 +27,7 @@ ls .github/workflows/ 2>/dev/null
 
 ### Step 2：生成 CI 模板
 
-将 `.github/workflows/ci.yml`（本仓库模板）复制到目标项目，并按技术栈调整：
+将 `templates/ci-node.yml`（Node 项目 CI 模板）复制到目标项目的 `.github/workflows/ci.yml`，并按技术栈调整：
 
 | 技术栈 | 关键改动 |
 |--------|---------|

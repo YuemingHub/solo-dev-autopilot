@@ -156,9 +156,10 @@ solo-dev-autopilot/
 │   └── autopilot-boundaries.md       │   AI 边界原则（v2.1 新增）
 │
 └── .github/workflows/                ← ⚡ GitHub Actions
-    ├── ci.yml                        │   CI 模板：lint→test→build→审计→密钥扫描（v2.1 新增）
+    ├── ci.yml                        │   仓库自检：JSON/SKILL.md/shell（scripts/ci-self-check.sh）
     └── auto-evolve.yml               │   每周自动搜索社区方案
 ```
+> 你的项目的 CI 模板见 `templates/ci-node.yml`（lint→test→build→审计→密钥扫描）。
 ## 🔧 核心 Skill 说明
 
 > 💡 第一次用？先让 AI 触发 `onboarding`（或说"怎么开始"），它会引导你安装 superpowers 并完成首次设置。
