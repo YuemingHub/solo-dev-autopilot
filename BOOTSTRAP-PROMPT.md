@@ -1,56 +1,38 @@
-﻿# 🚀 一键启动提示词
+﻿# 🚀 一键启动提示词（引导式）
 
-> 打开 AI IDE → 打开本仓库文件夹 → 把下面这段话原样粘贴发给 AI → 它自己跑完全部初始化 → 回复你"可以开始了"
-
----
-
-## 使用方法
-
-1. 打开你的 AI IDE（TRAE / Cursor / Claude Code / Cline 等）
-2. 打开这个仓库文件夹作为工作目录
-3. 把下面「复制这段」里的内容原样粘贴发送
-4. AI 会自主完成：认识项目 → 检测环境 → 建立记忆 → 告诉你可以开始了 → 引导你开发
+> 打开 AI IDE → 打开本仓库 → 粘贴下面这段 → AI 从第一句就开始引导你，全程你只需要回答它的问题
 
 ---
 
 ## 复制这段
 
 ```
-你是我的 AI 开发伙伴。我现在把 solo-dev-autopilot 仓库交给你，请你按下面的步骤自主完成初始化准备，每完成一个大阶段向我汇报一次结果，全部完成后引导我开始开发。
+你是我的 AI 开发伙伴。你已经加载了 solo-dev-autopilot 仓库，现在开始引导我开发。全程中文，逐步来，不要一次问我太多问题。
 
-【阶段 1：认识项目】
-1. 阅读 README.md，了解这个仓库是干什么的
-2. 阅读 docs/getting-started.md，了解完整使用流程
-3. 阅读 docs/newbie-pitfalls.md，了解新手最容易踩的坑（你要在后续开发中主动帮我避开）
-4. 阅读 skills/ 下所有 skill 文件，总结每个 skill 的用途，告诉我你有哪些能力
+第一步：请先回答我一个问题——你想做什么？
+A. 开发一个全新项目
+B. 继续开发一个已有项目（这个仓库或其他项目）
 
-【阶段 2：环境检测】
-1. 检测我的开发环境：Node.js / Bun / pnpm / Git 是否已安装，版本是多少
-2. 如果缺少某个工具，明确告诉我"需要安装 XX，命令是：..."，但不要擅自安装
-3. 检查 .gitignore 和 .env.example 是否就位
+我回答后，你按下面对应的流程引导我，每完成一小步就等我确认，不要闷头跑完：
+- 如果是 A（新项目）：引导我先说出想法 → 用 task-planner 帮我拆成 MVP 和小任务 → 建好 PROJECT-MEMORY.md 和 SESSION_DRIVER.md → 告诉我第一步先做什么
+- 如果是 B（已有项目）：问清楚项目在哪个文件夹 → 引导我把 skills/ 和 templates/ 复制到项目里 → 读取或生成 PROJECT-MEMORY.md、CODEMAP.md、SESSION_DRIVER.md → 告诉我上次做到哪、今天先做什么
 
-【阶段 3：建立项目记忆】
-1. 检查 PROJECT-MEMORY.md 是否存在；不存在就用 templates/PROJECT-MEMORY-template.md 生成，并引导我填写技术栈等关键信息
-2. 检查 SESSION_DRIVER.md 是否存在；不存在就用 templates/SESSION_DRIVER-template.md 生成
-3. 生成 CODEMAP.md 项目代码地图
-4. 阅读 templates/ONBOARDING-template.md 和 templates/AI-GUIDE-template.md，确认你理解"启动咒语"和记忆系统的工作方式
+你已经掌握的能力（供你参考）：
+- task-planner：把模糊想法拆成 MVP + 可执行任务，防止目标漂移
+- context-map：生成项目代码地图，恢复上下文
+- code-review：提交前代码审查（P0-P3 分级）
+- commit-helper：生成规范提交信息
+- deploy-check：部署前安全检查
+- troubleshoot：新手报错自动排查
+- fullstack-scaffold：一键生成全栈项目骨架
+- git-workflow：分支管理、合并、冲突处理
 
-【阶段 4：准备开发引导】
-1. 确认你已经掌握了 task-planner skill 的用法（把模糊想法拆成 MVP + 可执行任务）
-2. 准备好后，告诉我："我们已经可以开始开发了"
-3. 然后引导我说出第一个想法，用这句话开头：
-   "你想做什么？不用想清楚，把你脑子里冒出来的想法都告诉我，我来帮你整理成可执行的任务。"
-
-【重要规则】
-- 每个阶段完成都要向我汇报结果，不要一口气闷头跑完
-- 遇到问题先解释，再给方案；不要自作主张做超出我要求的事
-- 一切以"让我这个新手能顺利开始写代码"为目标
-- 全程用中文回复
+开始吧，先问我第一个问题。
 ```
 
 ---
 
-## 之后每次开会话（启动咒语）
+## 之后每次开会话（一句话恢复上下文）
 
 ```
 读取 PROJECT-MEMORY.md、CODEMAP.md 和 SESSION_DRIVER.md，了解项目当前状态，然后告诉我今天可以做什么。
@@ -62,4 +44,29 @@
 结束会话，生成会话回顾
 ```
 
-> 详见 templates/ONBOARDING-template.md 里的完整说明
+---
+
+## 分支流程示意
+
+```
+你粘贴提示词
+  ↓
+AI 问你：开发新项目 还是 继续已有项目？
+  ↓
+├── A 新项目
+│     ↓ 你说想法（哪怕很模糊）
+│     → AI 用 task-planner 拆 MVP + 任务清单
+│     → AI 建立 3 个记忆文件
+│     → AI 告诉你"第一步先做 XX"
+│     → 你跟着做，做完打勾
+│
+└── B 已有项目
+      ↓ 你说项目文件夹位置
+      → AI 复制 skills/ + templates/ 过去
+      → AI 读取/生成 3 个记忆文件
+      → AI 告诉你"上次做到哪，今天先做 XX"
+      → 你跟着做
+```
+
+> 核心原则：**你只需要回答问题 + 跟着做，AI 负责规划、拆解、引导、兜底。**
+> 详见 templates/ONBOARDING-template.md 和 templates/AI-GUIDE-template.md
