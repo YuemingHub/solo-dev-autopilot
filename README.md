@@ -6,7 +6,7 @@
 > **v2.6 三合一**：本仓库已合并三个项目 ——
 > ① **creating-forward**（平台无关协作协议：需求基线 / 任务图 / 证据验证 / 授权边界 / 中断恢复）
 > ② **agent-tool**（新手 Harness 层：环境侦测 → 搭建 → 开发循环 → 记忆 → 护栏）
-> ③ **solo-dev-autopilot**（交付闭环：20 个官方 Skill + 9 步闭环 + 三级权限）。
+> ③ **solo-dev-autopilot**（交付闭环：21 个官方 Skill + 9 步闭环 + 三级权限）。
 > 目标锚定：**中文新手 + 完整交付闭环 + 生产可用**。
 
 ## ✨ 核心价值
@@ -31,11 +31,11 @@
 
 | 层 | 位置 | 职责 |
 |---|---|---|
-| ① 协议层 | `creating-forward/` | 需求基线、上下文包、任务图、执行循环、证据验证、授权边界、中断恢复 |
-| ② Harness 层 | 7 个环境/验证 Skill + `harness/` | 侦测 → 搭建 → 脚手架 → 开发循环 → 记忆 → 护栏 |
+| ① 协议层 | `.claude/skills/creating-forward/SKILL.md` + `scripts/cf_*.py` | 需求基线、上下文包、任务图、执行循环、证据验证、授权边界、中断恢复 |
+| ② Harness 层 | 7 个环境/验证 Skill | 侦测 → 搭建 → 脚手架 → 开发循环 → 记忆 → 护栏 |
 | ③ 交付层 | 13 个交付 Skill + templates/ + configs/ | 规划 → 审查 → 测试 → 提交 → 部署门禁 → 上线预检 → 9 步闭环 |
 
-共 **20 个官方 SKILL.md**，入口看根目录 `AGENTS.md`（统一运行契约）。
+共 **21 个官方 SKILL.md**，入口看根目录 `AGENTS.md`（统一运行契约）。辅助资产统一归位：协议契约 `configs/schemas/`、模板 `templates/creating-forward/`、场景 `evals/`、适配器 `adapters/`、单测 `tests/`、自定义 agent `configs/agents/`。
 
 ## 🎯 适用工具
 
@@ -96,8 +96,8 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
                 │ 读取                    └──────────────────────────────┘
 ┌───────────────▼─────────────────────────────────────────────────────┐
 │         🦐 Solo Dev Autopilot 三合一配置层（本仓库）                  │
-│  ├─ ① creating-forward/ —— 协作协议（需求/任务图/证据/授权/恢复）     │
-│  ├─ ② 20 个 SKILL.md —— 7 harness 环境层 + 13 交付层（官方格式）      │
+│  ├─ ① creating-forward 技能 —— 协作协议（需求/任务图/证据/授权/恢复） │
+│  ├─ ② 21 个 SKILL.md —— 8 协议/环境层 + 13 交付层（官方格式）       │
 │  ├─ configs/permissions.json —— 三级危险度权限模型（唯一事实源）       │
 │  ├─ configs/modes/ —— toy / team / production 三档配置               │
 │  ├─ configs/tool-presets/ —— 各工具适配（Claude/Codex 全适配）        │
@@ -126,7 +126,7 @@ solo-dev-autopilot/
 ├── .claude/                           ← 🧠 Claude Code 原生适配（v2 新增）
 │   ├── settings.json                  │   三级危险度权限模型（auto-allow / ask / deny）
 │   ├── plugin/marketplace.json        │   插件市场注册（v2 新增）
-│   └── skills/                        │   官方 SKILL.md 格式技能 ×20（唯一事实源）
+│   └── skills/                        │   官方 SKILL.md 格式技能 ×21（唯一事实源）
 │       ├── 【交付层 ×13】              │
 │       ├── api-designer/SKILL.md      │   API 接口设计
 │       ├── ci-helper/SKILL.md         │   CI 配置与排障
@@ -141,6 +141,7 @@ solo-dev-autopilot/
 │       ├── task-planner/SKILL.md      │   目标拆解与防漂移
 │       ├── test-runner/SKILL.md       │   测试闭环 + 覆盖率
 │       ├── troubleshoot/SKILL.md      │   新手问题排查
+│       ├── creating-forward/SKILL.md  │   协作协议（需求基线/任务图/证据/授权/恢复）
 │       └── 【Harness 层 ×7 · v2.6 并入】│
 │           ├── env-detect/SKILL.md    │   环境侦测 → .agentenv.json
 │           ├── env-setup/SKILL.md     │   补运行时/装依赖/冒烟验证
@@ -150,27 +151,14 @@ solo-dev-autopilot/
 │           ├── harness-guard/SKILL.md │   危险操作/密钥/覆盖护栏
 │           └── book-experiments/SKILL.md │ 书配套实验运行
 │
-├── skills/                            ← 🔗 社区工具兼容层（平铺 .md ×20，由 sync-skills.py 从 .claude/skills/ 同步）
+├── skills/                            ← 🔗 社区工具兼容层（平铺 .md ×21，由 sync-skills.py 从 .claude/skills/ 同步）
 │
-├── creating-forward/                  ← 🏛️ ① 协议层（v2.6 并入，可独立验证）
-│   ├── SKILL.md + START_HERE.md       │   平台无关协作协议入口
-│   ├── protocol/ · schemas/ · templates/ │ 规则、状态契约、记录模板
-│   ├── scripts/ · tests/ · evals/     │   验证工具链（validate_package / 任务图 / 评估）
-│   └── adapters/ · bootstrap/ · plans/ │ 项目 Adapter 与验证计划
-│
-├── harness/                           ← 🧰 ② Harness 层资产（v2.6 并入）
-│   ├── AGENTS.md                      │   harness 触发时序规则
-│   ├── agents/                        │   env-agent / dev-agent（自定义 agent）
-│   ├── tools/                         │   validate.py / e2e_demo.py
-│   └── install.ps1                    │   同步到 ohmyagent 全局配置目录
-│
-├── references/                        ← 📖 资料库（只读）
-│   └── book/                          │   《深入理解 AI Agent》中文解析 + PDF
-│
-├── configs/                           ← ⚙️ 各工具的预设配置
+├── configs/                           ← ⚙️ 配置与契约
 │   ├── permissions.json               │   三级危险度权限模型（唯一事实源，v2.1 新增）
 │   ├── modes/                         │   三档配置：toy / team / production（v2.1 新增）
 │   ├── mcp-servers.json              │   MCP 服务器推荐配置
+│   ├── schemas/                       │   协议状态契约（project-state / task-graph / task）
+│   ├── agents/                        │   env-agent / dev-agent（自定义 agent 定义）
 │   └── tool-presets/                  │   各工具适配配置
 │       ├── claude-code.json          │   三级权限 + MCP + skillsPath
 │       ├── cursor.json               │
@@ -178,12 +166,24 @@ solo-dev-autopilot/
 │       ├── reasonix.json             │   三级权限 + hooks
 │       └── codex.json                │   Codex 适配（AGENTS.md + 沙箱映射，v2.4 新增）
 │
+├── adapters/                          ← 🏛️ 协议项目适配器（MingOS 等）
+├── evals/                             ← 📋 协议行为场景目录（core / mingos）
+├── tests/                             ← 🧪 协议层单测（49 tests）
+├── templates/creating-forward/        ← 🏛️ 协议工作区模板（state / task-graph / evidence …）
+│
 ├── scripts/                           ← 🔧 自动化脚本
 │   ├── setup.sh / setup.ps1          │   一键安装（macOS/Linux/Windows + 模式选择）
 │   ├── post-session.sh / post-session.ps1 │ 会话结束自动化（v2.1 新增 Windows 版）
 │   ├── install-git-hooks.sh / .ps1   │   Git Hooks 安装（带备份）
 │   ├── sync-skills.py                │   Skill 兼容层同步（v2.3.3 新增）
+│   ├── sync-ohmyagent.ps1            │   同步 skill+agent 到 ohmyagent 全局目录
+│   ├── validate-ohmyagent.py         │   校验 ohmyagent 安装结果
+│   ├── cf_*.py                        │   协议层校验链（package / evals / task-graph / workspace）
+│   ├── e2e_demo.py                   │   环境层端到端演示
 │   └── auto-evolve.sh                │   社区方案搜索
+│
+├── references/                        ← 📖 资料库（只读）
+│   └── book/                          │   《深入理解 AI Agent》中文解析 + PDF
 │
 ├── templates/                         ← 📝 项目模板
 │   ├── AI-GUIDE-template.md          │   AI 协作指南（防幻觉）
@@ -281,9 +281,9 @@ solo-dev-autopilot/
 | harness-guard | 危险操作分级/密钥检查/覆盖保护 | 危险命令前自动 |
 | book-experiments | 跑《深入理解 AI Agent》94 个实验 | 「跑这本书的实验」 |
 
-### 6️⃣ 协议层（creating-forward/）
+### 6️⃣ 协议层（creating-forward 技能）
 
-不是 Skill，是纪律：需求基线（先说明白，再做明白）、任务图（有依赖/有完成标准/有验证方法）、证据验证（没有证据不算完成）、授权边界（用户离开不扩大授权）、中断恢复（以工作区文件为准，不依赖对话记忆）。入口：`creating-forward/START_HERE.md`。
+不是普通 Skill，是纪律：需求基线（先说明白，再做明白）、任务图（有依赖/有完成标准/有验证方法）、证据验证（没有证据不算完成）、授权边界（用户离开不扩大授权）、中断恢复（以工作区文件为准，不依赖对话记忆）。入口：`.claude/skills/creating-forward/SKILL.md`；校验链：`python scripts/cf_validate_package.py` + `python -m unittest discover -s tests`（49 tests）。
 
 ## ⚙️ 配置模式（toy / team / production）
 

@@ -1,17 +1,18 @@
 # AGENTS.md — Solo Dev Autopilot 统一运行契约（三合一）
 
 > 本文件是三合一后的**全局规则入口**：任何 AI 工具（Claude Code / Codex / Cursor / Cline / ohmyagent 等）进入本仓库或把它作为项目根目录时，先读本文件。
-> 三层架构一句话：**协议层定纪律（creating-forward/）、harness 层管环境与验证、交付层完成产品闭环**。
+> 三层架构一句话：**协议层定纪律（creating-forward 技能）、harness 层管环境与验证、交付层完成产品闭环**。
 
 ## 三层架构
 
 | 层 | 位置 | 职责 | 入口 |
 |---|---|---|---|
-| ① 协议层 | `creating-forward/` | 需求基线、上下文包、任务图、执行循环、证据验证、授权边界、中断恢复 | `creating-forward/START_HERE.md` |
-| ② Harness 层 | 7 个环境/验证 Skill + `harness/` | 侦测 → 搭建 → 脚手架 → 开发循环 → 记忆 → 护栏 | `.claude/skills/` 中的 env-* / dev-loop / task-memory / harness-guard / project-scaffold / book-experiments |
+| ① 协议层 | `.claude/skills/creating-forward/SKILL.md` | 需求基线、上下文包、任务图、执行循环、证据验证、授权边界、中断恢复 | 技能文件本身 + `scripts/cf_*.py` 校验链 |
+| ② Harness 层 | 7 个环境/验证 Skill | 侦测 → 搭建 → 脚手架 → 开发循环 → 记忆 → 护栏 | `.claude/skills/` 中的 env-* / dev-loop / task-memory / harness-guard / project-scaffold / book-experiments |
 | ③ 交付层 | 13 个交付 Skill + templates/ + configs/ | 规划 → 审查 → 测试 → 提交 → 部署门禁 → 上线预检 → 9 步闭环 | `.claude/skills/` 其余 Skill + `docs/closed-loop.md` |
 
-共 **20 个官方 SKILL.md**（`.claude/skills/`，唯一事实源）；平铺兼容层 `skills/*.md` 由 `scripts/sync-skills.py` 单向同步，不要手改。
+共 **21 个官方 SKILL.md**（`.claude/skills/`，唯一事实源）；平铺兼容层 `skills/*.md` 由 `scripts/sync-skills.py` 单向同步，不要手改。
+辅助资产统一归位：协议状态契约 `configs/schemas/`、模板 `templates/creating-forward/`、场景目录 `evals/`、适配器 `adapters/`、单测 `tests/`、自定义 agent `configs/agents/`。
 
 ## 触发时序（按会话阶段）
 
@@ -62,5 +63,5 @@
 
 - 修改 Skill 只改 `.claude/skills/`，然后 `python scripts/sync-skills.py` 重新生成平铺层
 - 仓库自检：`bash scripts/ci-self-check.sh`（JSON / SKILL.md frontmatter / shell 语法 / 平铺层一致性 / creating-forward 包校验）
-- creating-forward 协议验证：`python creating-forward/scripts/validate_package.py` 与 `python -m unittest discover -s creating-forward/tests -v`
+- creating-forward 协议验证：`python scripts/cf_validate_package.py` 与 `python -m unittest discover -s tests -v`
 - 不改锁文件做版本升级（除非用户要求）；不猜测项目类型，判定不了就如实报告

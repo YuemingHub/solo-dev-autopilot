@@ -116,17 +116,17 @@ else
   PY=""
 fi
 if [ -n "$PY" ]; then
-  if "$PY" creating-forward/scripts/validate_package.py; then
+  if "$PY" scripts/cf_validate_package.py; then
     ok "协议层 validate_package"
   else
     bad "协议层 validate_package 失败"
   fi
-  if "$PY" creating-forward/scripts/validate_evals.py; then
+  if "$PY" scripts/cf_validate_evals.py; then
     ok "协议层 validate_evals"
   else
     bad "协议层 validate_evals 失败"
   fi
-  if "$PY" -m unittest discover -s creating-forward/tests 2>/dev/null; then
+  if "$PY" -m unittest discover -s tests 2>/dev/null; then
     ok "协议层 unittest"
   else
     bad "协议层 unittest 失败"
@@ -134,7 +134,7 @@ if [ -n "$PY" ]; then
 else
   # python 不可用：降级为存在性检查
   cf_missing=0
-  for f in creating-forward/SKILL.md creating-forward/scripts/validate_package.py creating-forward/tests/test_package.py; do
+  for f in .claude/skills/creating-forward/SKILL.md scripts/cf_validate_package.py tests/test_cf_package.py; do
     if [ ! -f "$f" ]; then
       bad "协议层缺失: $f"
       cf_missing=$((cf_missing + 1))

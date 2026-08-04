@@ -1,7 +1,7 @@
 {
   "name": "solo-dev-autopilot",
-  "description": "中文新手 + 完整交付闭环 + 生产可用 的 Solo 开发自动驾驶 Skill 集（三合一：协议层 + Harness 层 + 交付层，20 个官方 SKILL.md）",
-  "version": "2.6.0",
+  "description": "中文新手 + 完整交付闭环 + 生产可用 的 Solo 开发自动驾驶 Skill 集（三合一：协议层 + Harness 层 + 交付层，21 个官方 SKILL.md）",
+  "version": "2.7.0",
   "author": {
     "name": "YuemingHub"
   },

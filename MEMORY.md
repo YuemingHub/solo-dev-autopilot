@@ -1,15 +1,17 @@
 # MEMORY.md — 长期记忆
 
-## 三合一合并完成（2026-08-05，v2.6.0）
+## 三合一深度整合完成（2026-08-05，v2.7.0）
 
-creating-forward-main + agent-tool + solo-dev-autopilot 已统一为一个仓库（基座 = solo-dev-autopilot，唯一有 git 历史的）：
+三个项目已统一为一个仓库，且**包中包已彻底拆除**（v2.6 只是并排摆放，v2.7 拆散归位）：
 
-- ① 协议层 `creating-forward/`：平台无关协作协议（需求基线/任务图/证据/授权/恢复），验证链：`python creating-forward/scripts/validate_package.py` + `python -m unittest discover -s creating-forward/tests`（60 tests）
-- ② Harness 层：原 agent-tool 的 7 个 skill 升级为官方 SKILL.md 并入 `.claude/skills/`；`harness/`（agents/tools/install.ps1）、`references/book/`（书资料）
-- ③ 交付层：原 13 个交付 Skill 不动；官方 Skill 共 **20 个**，平铺层 `skills/*.md` 由 sync-skills.py 单向同步
-- 根目录 `AGENTS.md` = 统一运行契约；CI 自检含协议层校验（ci-self-check.sh 第 5 节）
+- ① 协议层：`.claude/skills/creating-forward/SKILL.md`（1 个技能文件，protocol/ 7 文件已合并删除）；校验脚本 `scripts/cf_*.py`；契约 `configs/schemas/`；模板 `templates/creating-forward/`；场景 `evals/`；适配器 `adapters/`；单测 `tests/test_cf_*.py`（49 tests）
+- ② Harness 层：7 个环境技能在 `.claude/skills/`；自定义 agent 在 `configs/agents/`；`scripts/sync-ohmyagent.ps1`（原 harness/install.ps1）+ `scripts/validate-ohmyagent.py`；`references/book/`（书资料）
+- ③ 交付层：13 个交付 Skill 不动；官方 Skill 共 **21 个**（含 creating-forward），平铺层 `skills/*.md` 由 sync-skills.py 单向同步
+- **creating-forward/ 和 harness/ 目录已不存在**（git rm 删除）；根目录 `AGENTS.md` = 统一运行契约；CI 自检第 5 节走 `scripts/cf_validate_package.py` + `tests/`
+- 验证链：`python scripts/cf_validate_package.py` + `python scripts/cf_validate_evals.py` + `python -m unittest discover -s tests`（49 tests）
 - 本机 Python：`C:\Users\ample\AppData\Local\Programs\Python\Python312\python.exe`（3.12.10，winget 装）
 - 临时脚本教训：PowerShell 5.1 读无 BOM UTF-8 脚本汉字可能撞引号 → 临时 .ps1 用纯 ASCII；exec_command 内联 PS 会吞 `$` 变量 → 写脚本文件执行
+- 用户要求（2026-08-05）：文件统一放一起，不要跑好多个文件；多余的直接删。以后新增内容也必须进唯一目录，不新建包中包
 
 ## 三仓库联动项目（2026-08-03 启动）
 

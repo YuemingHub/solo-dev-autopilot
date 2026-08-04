@@ -14,7 +14,7 @@
 | 检查项 | 数量 | 命令 |
 |--------|------|------|
 | JSON 配置 | 10 个 | `configs/*.json` + `configs/tool-presets/*.json` + `.claude/settings.json` |
-| SKILL.md frontmatter | 20 个 | `.claude/skills/*/SKILL.md`（必须含 name/description/license） |
+| SKILL.md frontmatter | 21 个 | `.claude/skills/*/SKILL.md`（必须含 name/description/license） |
 | Shell 脚本语法 | 7 个 | `scripts/*.sh` + `templates/pre-commit-hook` + `pre-push-hook` |
 
 **结果**：本机 23/23 断言通过；GitHub Actions 真实运行连续全绿（见 §3）。
@@ -82,7 +82,7 @@
 
 | 检查项 | 结果 |
 |--------|------|
-| `.claude/skills/` 实际数量 | 20 个 = README 声称 20 个 ✅ |
+| `.claude/skills/` 实际数量 | 21 个 = README 声称 21 个 ✅ |
 | README 结构树声称的关键文件 | 23/23 存在 ✅ |
 | 6 个 JSON 配置解析 | 全部通过（PowerShell ConvertFrom-Json）✅ |
 | v1 残留引用（skills/*.md / runAs） | docs 扫描干净，仅保留"已废弃"说明 ✅ |

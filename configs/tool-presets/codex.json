@@ -45,7 +45,7 @@
   },
   "skills": {
     "source": ".claude/skills/<name>/SKILL.md（官方格式，唯一事实源）",
-    "loading": "Codex 支持 .codex/skills/<name>/SKILL.md：把 20 个 skill 复制到项目 .codex/skills/，或直接以本仓库为项目根目录读取。详见 docs/codex-setup.md",
+    "loading": "Codex 支持 .codex/skills/<name>/SKILL.md：把 21 个 skill 复制到项目 .codex/skills/，或直接以本仓库为项目根目录读取。详见 docs/codex-setup.md",
     "sync": "社区平铺兼容层 skills/<name>.md 由 scripts/sync-skills.py 单向同步，不要手改平铺层"
   }
 }

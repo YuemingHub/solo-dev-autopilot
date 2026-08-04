@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Secrets / env
+.env
+.env.*
+*.pem
+*.key
+
+# Build artifacts
+dist/
+build/
+
+# Temp scripts (agent scratch)
+.tmp-*
+
+# Project runtime artifacts
+.agent-memory/
+.agentenv.json
+.creating-forward/

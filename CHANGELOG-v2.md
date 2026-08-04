@@ -2,6 +2,38 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.7 — 深度整合：拆包统一（2026-08-05）
+
+> v2.6 只是把三个项目"并排搬进来"，`creating-forward/`（68 文件）和 `harness/` 还是包中包。本次**彻底拆包**：活文件全部归入主仓库唯一目录，重复入口和历史包袱直接删除。以后不会再跑"好多个文件"。
+
+### 结构变化
+
+- **`creating-forward/` 包中包删除**，内容拆散归位：
+  - 协议本体收敛为 1 个技能文件：`.claude/skills/creating-forward/SKILL.md`（protocol/ 7 文件合并）
+  - 6 个校验脚本 → `scripts/cf_*.py`（加 cf_ 前缀并入主 scripts/）
+  - 状态契约 schemas/ → `configs/schemas/`
+  - 模板 templates/ → `templates/creating-forward/`
+  - 行为场景 evals/ → `evals/`（md 重复说明删除）
+  - 适配器 adapters/ → `adapters/`
+  - 单测 tests/ → `tests/test_cf_*.py`（3 个文件重写适配新布局）
+- **`harness/` 包中包删除**：agents/ → `configs/agents/`，tools/e2e_demo.py → `scripts/e2e_demo.py`，tools/validate.py → `scripts/validate-ohmyagent.py`，install.ps1 → `scripts/sync-ohmyagent.ps1`
+- **历史包袱删除**：protocol/ 7 个分立文件、START_HERE.md、bootstrap/ 分发包、plans/、evals md 重复文档、迁移脚本等
+- **官方 SKILL.md 20 → 21 个**（creating-forward 成为正式技能），平铺兼容层同步 21 个
+
+### 变更
+
+- 版本号 2.6.0 → 2.7.0（plugin.json / marketplace.json）
+- AGENTS.md / README / 各 docs 的三层架构表述与验证命令全部更新为新路径
+- ci-self-check.sh 第 5 节改走 `scripts/cf_validate_package.py` + `tests/`
+
+### 验证（2026-08-05，Windows 真机，Python 3.12.10）
+
+- `python scripts/cf_validate_package.py` → PACKAGE VALIDATION: PASSED
+- `python scripts/cf_validate_evals.py` → EVALUATION VALIDATION: PASSED（2 catalogs, 11 scenarios）
+- `python -m unittest discover -s tests` → Ran 49 tests, OK
+- `python scripts/sync-skills.py --check` → 21 个官方 Skill 与平铺兼容层一致
+- creating-forward/ 与 harness/ 目录已不存在 ✅
+
 ## v2.6 — 三合一合并（2026-08-05）
 
 > 目标锚定：**中文新手 + 完整交付闭环 + 生产可用**。把 creating-forward（协议层）、agent-tool（harness 层）、solo-dev-autopilot（交付层）三个项目合并为一个仓库。

@@ -42,7 +42,7 @@
 
 | 评分点 | 实物证据 |
 |--------|---------|
-| 官方格式 | 20 个 Skill 全部符合 [anthropics/skills](https://github.com/anthropics/skills) SKILL.md 规范 |
+| 官方格式 | 21 个 Skill 全部符合 [anthropics/skills](https://github.com/anthropics/skills) SKILL.md 规范 |
 | 差异化 | 每个 Skill 标注上游（superpowers/alfred-dev）与我们的增强点 |
 | 触发机制 | description 写明触发词（如 deploy-gate 的"能部署了吗/部署上线"） |
 | 测试闭环 | test-runner / ci-helper / production-preflight 覆盖交付后段 |
@@ -56,7 +56,7 @@
 | 蓝图可追溯 | `docs/BLUEPRINT-v2.md` 每个任务勾选 ✅ |
 | 变更记录 | `CHANGELOG-v2.md` 逐版本记录 |
 | 文档无死链 | Phase 1 修复 mcp-guide.md 死链，Phase 2/3 同步所有引用 |
-| 版本对齐 | README 技能清单 20 个 = `.claude/skills/` 实际 20 个 |
+| 版本对齐 | README 技能清单 21 个 = `.claude/skills/` 实际 21 个 |
 
 **扣分点**：README 声称的个别文件（如 docs/superpowers/specs/ 接轨说明）待完善。
 
