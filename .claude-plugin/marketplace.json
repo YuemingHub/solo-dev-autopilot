@@ -5,8 +5,8 @@
     "email": "replace-me@example.com"
   },
   "metadata": {
-    "description": "中文新手 + 完整交付闭环 + 生产可用：Solo Dev Autopilot 的 Claude Code Skill 集",
-    "version": "2.0.0"
+    "description": "中文新手 + 完整交付闭环 + 生产可用：Solo Dev Autopilot 三合一 Skill 集（协议层 + Harness 层 + 交付层）",
+    "version": "2.6.0"
   },
   "plugins": [
     {
@@ -15,8 +15,8 @@
         "source": "url",
         "url": "https://github.com/YuemingHub/solo-dev-autopilot.git"
       },
-      "description": "让第一次用 AI 写代码的中文用户，能交付一个真正能上线、能维护、能排查问题的产品。含 onboarding / task-planner / code-review / deploy-gate / context-map / troubleshoot 等中文新手增强 Skill。",
-      "version": "2.0.0",
+      "description": "让第一次用 AI 写代码的中文用户，能交付一个真正能上线、能维护、能排查问题的产品。三合一：creating-forward 协议层（需求/证据/授权/恢复）+ 7 个 harness 环境技能 + 13 个交付技能，共 20 个官方 SKILL.md。",
+      "version": "2.6.0",
       "strict": true
     }
   ]

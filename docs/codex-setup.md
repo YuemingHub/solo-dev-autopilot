@@ -13,7 +13,7 @@ cd solo-dev-autopilot
 ```
 
 1. 把 `configs/tool-presets/codex.json` 里的 `agentsMd` 片段合入仓库根 `AGENTS.md`（Codex 自动读取）。
-2. 加载 skills：把 `.claude/skills/` 复制到 `.codex/skills/`（Codex 的 skills 目录约定，13 个 SKILL.md 均为官方格式）。
+2. 加载 skills：把 `.claude/skills/` 复制到 `.codex/skills/`（Codex 的 skills 目录约定，20 个 SKILL.md 均为官方格式）。
 3. 安装 git hooks：`bash scripts/install-git-hooks.sh`（或 Windows 版 `scripts/install-git-hooks.ps1`）。
 
 ### 方式 B：接入已有项目
@@ -38,7 +38,7 @@ cd solo-dev-autopilot
 
 ## 4. 已知差异与注意
 
-- superpowers 是 Claude Code 插件市场的方法论底座；Codex 侧的方法论由 13 个 Skill + 9 步闭环承担，不强制安装 superpowers。
+- superpowers 是 Claude Code 插件市场的方法论底座；Codex 侧的方法论由 20 个 Skill + 9 步闭环 + creating-forward 协议层承担，不强制安装 superpowers。
 - 中文 commit 消息用 `git commit -F <UTF-8无BOM文件>`（PowerShell 5.1 的 `-m` 中文会变 `?`，见 `newbie-pitfalls.md` 坑 20）。
 - GitHub 大包传输失败时用代理（见 `newbie-pitfalls.md` 坑 21）。
 - 修改 skill 内容只改 `.claude/skills/`，平铺兼容层由 `scripts/sync-skills.py` 单向同步。

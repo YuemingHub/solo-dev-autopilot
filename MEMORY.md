@@ -1,5 +1,16 @@
 # MEMORY.md — 长期记忆
 
+## 三合一合并完成（2026-08-05，v2.6.0）
+
+creating-forward-main + agent-tool + solo-dev-autopilot 已统一为一个仓库（基座 = solo-dev-autopilot，唯一有 git 历史的）：
+
+- ① 协议层 `creating-forward/`：平台无关协作协议（需求基线/任务图/证据/授权/恢复），验证链：`python creating-forward/scripts/validate_package.py` + `python -m unittest discover -s creating-forward/tests`（60 tests）
+- ② Harness 层：原 agent-tool 的 7 个 skill 升级为官方 SKILL.md 并入 `.claude/skills/`；`harness/`（agents/tools/install.ps1）、`references/book/`（书资料）
+- ③ 交付层：原 13 个交付 Skill 不动；官方 Skill 共 **20 个**，平铺层 `skills/*.md` 由 sync-skills.py 单向同步
+- 根目录 `AGENTS.md` = 统一运行契约；CI 自检含协议层校验（ci-self-check.sh 第 5 节）
+- 本机 Python：`C:\Users\ample\AppData\Local\Programs\Python\Python312\python.exe`（3.12.10，winget 装）
+- 临时脚本教训：PowerShell 5.1 读无 BOM UTF-8 脚本汉字可能撞引号 → 临时 .ps1 用纯 ASCII；exec_command 内联 PS 会吞 `$` 变量 → 写脚本文件执行
+
 ## 三仓库联动项目（2026-08-03 启动）
 
 目标：solo-dev-autopilot（方法论）↔ Ming-os-production（真实项目）↔ Ming-os-understanding（理解地图）三者循环验证、一起迭代。

@@ -1,0 +1,17 @@
+id: "O-001"
+timestamp: null
+projectId: ""
+runId: ""
+taskId: ""
+summary: ""
+observedBehavior: ""
+expectedBehavior: ""
+impact:
+  userBurden: "low"
+  correctness: "low"
+  safety: "none"
+  recoverability: "none"
+evidenceIds: []
+suspectedLayer: "implementation"
+reproducible: false
+status: "observed"

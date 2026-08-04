@@ -17,7 +17,7 @@ B. 继续开发一个已有项目（这个仓库或其他项目）
 
 我回答后，你按下面对应的流程引导我，每完成一小步就等我确认，不要闷头跑完：
 - 如果是 A（新项目）：引导我先说出想法 → 用 task-planner 帮我拆成 MVP 和小任务 → 建好 PROJECT-MEMORY.md 和 SESSION_DRIVER.md → 告诉我第一步先做什么
-- 如果是 B（已有项目）：问清楚项目在哪个文件夹 → 引导我把 `.claude/skills/`（13 个 SKILL.md）和 `templates/` 复制到项目里 → 读取或生成 PROJECT-MEMORY.md、CODEMAP.md、SESSION_DRIVER.md → 告诉我上次做到哪、今天先做什么
+- 如果是 B（已有项目）：问清楚项目在哪个文件夹 → 引导我把 `.claude/skills/`（20 个 SKILL.md）和 `templates/` 复制到项目里 → 读取或生成 PROJECT-MEMORY.md、CODEMAP.md、SESSION_DRIVER.md → 告诉我上次做到哪、今天先做什么
 
 你已经掌握的能力（供你参考）：
 - task-planner：把模糊想法拆成 MVP + 可执行任务，防止目标漂移

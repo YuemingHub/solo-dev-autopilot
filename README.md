@@ -1,21 +1,41 @@
- 🚀 Solo Dev Autopilot
+ 🚀 Solo Dev Autopilot（三合一）
 
 > **一个人，一个 AI，一个完整产品。**  
 > 通用 Solo 开发自动驾驶环境 —— Clone、配置一次、永久自动驾驶。
+>
+> **v2.6 三合一**：本仓库已合并三个项目 ——
+> ① **creating-forward**（平台无关协作协议：需求基线 / 任务图 / 证据验证 / 授权边界 / 中断恢复）
+> ② **agent-tool**（新手 Harness 层：环境侦测 → 搭建 → 开发循环 → 记忆 → 护栏）
+> ③ **solo-dev-autopilot**（交付闭环：20 个官方 Skill + 9 步闭环 + 三级权限）。
+> 目标锚定：**中文新手 + 完整交付闭环 + 生产可用**。
 
 ## ✨ 核心价值
 
 | 新手痛点 | 我们的解法 |
 |---------|-----------|
-| 不知道选什么技术栈 | 预设默认全栈配置 |
-| 每次开会话 AI 不记得上下文 | 自动代码地图 + 持久化记忆 |
-| 写完代码不知道对不对 | 自动 P0-P3 分级审查 |
+| 不知道选什么技术栈 | 预设默认全栈配置 + project-scaffold 从零建项目 |
+| 环境装不上、跑不起来 | env-detect → env-setup 自动侦测补环境 |
+| 每次开会话 AI 不记得上下文 | 自动代码地图 + 持久化记忆（PROJECT-MEMORY + .agent-memory） |
+| 写完代码不知道对不对 | dev-loop 质量门禁 + P0-P3 分级审查 |
 | 不知道怎么提交/部署 | 一键 commit + 部署前检查 |
 | 不知道怎么排错 | 新手问题自动排查 Skill |
 | 不知道 AI 能帮我什么 | AI 协作指南（能力地图 + 防幻觉） |
 | 想法混乱不会拆任务 | task-planner Skill（目标拆解 + 防漂移） |
 | 会话结束忘了做到哪 | SESSION_DRIVER 自动回顾 + 进度跟踪 |
+| 需求模糊就开始干 | creating-forward 需求基线（先说明白，再做明白） |
+| AI 越权/误删/覆盖 | harness-guard 护栏 + 三级权限 + 授权边界协议 |
+| 中断了接不上 | 工作区状态文件恢复（不依赖对话记忆） |
 | 工具换了要重新配 | 工具无关设计，一套配置通用 |
+
+## 🏛️ 三层架构（三合一）
+
+| 层 | 位置 | 职责 |
+|---|---|---|
+| ① 协议层 | `creating-forward/` | 需求基线、上下文包、任务图、执行循环、证据验证、授权边界、中断恢复 |
+| ② Harness 层 | 7 个环境/验证 Skill + `harness/` | 侦测 → 搭建 → 脚手架 → 开发循环 → 记忆 → 护栏 |
+| ③ 交付层 | 13 个交付 Skill + templates/ + configs/ | 规划 → 审查 → 测试 → 提交 → 部署门禁 → 上线预检 → 9 步闭环 |
+
+共 **20 个官方 SKILL.md**，入口看根目录 `AGENTS.md`（统一运行契约）。
 
 ## 🎯 适用工具
 
@@ -64,33 +84,34 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 ┌──────────────────────────────────────────────────────────────────────┐
 │                          你的项目 (Your Project)                     │
 │   CODEMAP.md · PROJECT-MEMORY.md · SESSION_DRIVER.md · .env.example   │
-│   pre-commit / pre-push hooks · CI · 部署目标                        │
+│   .agentenv.json · .agent-memory/ · pre-commit/pre-push · CI · 部署    │
 └───────────────┬──────────────────────────────────┬──────────────────┘
                 │ 注入上下文（记忆/代码地图）        │ 自动化执行（质量门）
 ┌───────────────▼──────────────────┐   ┌───────────▼──────────────────┐
 │      AI 编程工具（任选其一）       │   │     Git Hooks + CI           │
 │  Claude Code · Codex · Cursor    │   │  pre-commit：P0 阻止提交      │
 │  Cline · Reasonix · Windsurf     │   │  pre-push：推送前审查提醒     │
-└───────────────┬──────────────────┘   │  GitHub Actions：lint→test    │
-                │ 读取                    │  →build→审计→密钥扫描        │
-                │                       └──────────────────────────────┘
+│  ohmyagent · 任何 MCP 工作台      │   │  GitHub Actions：lint→test    │
+└───────────────┬──────────────────┘   │  →build→审计→密钥扫描        │
+                │ 读取                    └──────────────────────────────┘
 ┌───────────────▼─────────────────────────────────────────────────────┐
-│              🦐 Solo Dev Autopilot 配置层（本仓库）                   │
-│  ├─ 13 个 SKILL.md —— 中文新手场景增强（官方格式）                    │
+│         🦐 Solo Dev Autopilot 三合一配置层（本仓库）                  │
+│  ├─ ① creating-forward/ —— 协作协议（需求/任务图/证据/授权/恢复）     │
+│  ├─ ② 20 个 SKILL.md —— 7 harness 环境层 + 13 交付层（官方格式）      │
 │  ├─ configs/permissions.json —— 三级危险度权限模型（唯一事实源）       │
 │  ├─ configs/modes/ —— toy / team / production 三档配置               │
-│  ├─ configs/tool-presets/ —— 各工具适配（Claude 全适配，其他社区适配）│
-│  └─ configs/mcp-servers.json —— MCP 服务器推荐                       │
+│  ├─ configs/tool-presets/ —— 各工具适配（Claude/Codex 全适配）        │
+│  └─ references/book/ —— 《深入理解 AI Agent》中文解析资料库           │
 └───────────────┬─────────────────────────────────────────────────────┘
                 │ 基于（不重复造轮子）
 ┌───────────────▼─────────────────────────────────────────────────────┐
 │                           上游开源底座                                │
 │  anthropics/skills（SKILL.md 标准）· obra/superpowers（开发方法论）    │
-│  punkpeye/awesome-mcp-servers（MCP 清单）                             │
+│  punkpeye/awesome-mcp-servers（MCP 清单）· bojieli/ai-agent-book      │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**读法**：你的项目在最上层（产物），AI 工具在中间（执行者），本仓库是配置层（规则与技能），
+**读法**：你的项目在最上层（产物），AI 工具在中间（执行者），本仓库是三合一配置层（协议 + 规则 + 技能），
 最下面是上游底座（我们不重造的部分）。Solo 开发者只需关心最上层——其余由 autopilot 自动推进。
 
 ## 📂 仓库结构
@@ -105,22 +126,46 @@ solo-dev-autopilot/
 ├── .claude/                           ← 🧠 Claude Code 原生适配（v2 新增）
 │   ├── settings.json                  │   三级危险度权限模型（auto-allow / ask / deny）
 │   ├── plugin/marketplace.json        │   插件市场注册（v2 新增）
-│   └── skills/                        │   官方 SKILL.md 格式技能（Claude Code 自动识别）
+│   └── skills/                        │   官方 SKILL.md 格式技能 ×20（唯一事实源）
+│       ├── 【交付层 ×13】              │
 │       ├── api-designer/SKILL.md      │   API 接口设计
-│       ├── ci-helper/SKILL.md         │   CI 配置与排障（v2.1 新增）
+│       ├── ci-helper/SKILL.md         │   CI 配置与排障
 │       ├── code-review/SKILL.md       │   P0-P3 分级代码审查
 │       ├── commit-helper/SKILL.md     │   智能 Commit 信息
 │       ├── context-map/SKILL.md       │   代码地图（会话恢复核心）
 │       ├── deploy-gate/SKILL.md       │   部署门禁（人工确认红线）
 │       ├── fullstack-scaffold/SKILL.md│   全栈脚手架生成
-│       ├── observability/SKILL.md     │   日志/Sentry/健康检查（v2.1 新增）
+│       ├── observability/SKILL.md     │   日志/Sentry/健康检查
 │       ├── onboarding/SKILL.md        │   首次使用引导（装 superpowers）
-│       ├── production-preflight/SKILL.md │ 上线前预检（v2.1 新增）
+│       ├── production-preflight/SKILL.md │ 上线前预检
 │       ├── task-planner/SKILL.md      │   目标拆解与防漂移
-│       ├── test-runner/SKILL.md       │   测试闭环 + 覆盖率（v2.1 新增）
-│       └── troubleshoot/SKILL.md      │   新手问题排查
+│       ├── test-runner/SKILL.md       │   测试闭环 + 覆盖率
+│       ├── troubleshoot/SKILL.md      │   新手问题排查
+│       └── 【Harness 层 ×7 · v2.6 并入】│
+│           ├── env-detect/SKILL.md    │   环境侦测 → .agentenv.json
+│           ├── env-setup/SKILL.md     │   补运行时/装依赖/冒烟验证
+│           ├── project-scaffold/SKILL.md │ 从零建项目（6 套模板）
+│           ├── dev-loop/SKILL.md      │   质量门禁+自动修复+熔断
+│           ├── task-memory/SKILL.md   │   跨会话项目记忆
+│           ├── harness-guard/SKILL.md │   危险操作/密钥/覆盖护栏
+│           └── book-experiments/SKILL.md │ 书配套实验运行
 │
-├── skills/                            ← 🔗 社区工具兼容层（平铺 .md，由 sync-skills.py 从 .claude/skills/ 同步）
+├── skills/                            ← 🔗 社区工具兼容层（平铺 .md ×20，由 sync-skills.py 从 .claude/skills/ 同步）
+│
+├── creating-forward/                  ← 🏛️ ① 协议层（v2.6 并入，可独立验证）
+│   ├── SKILL.md + START_HERE.md       │   平台无关协作协议入口
+│   ├── protocol/ · schemas/ · templates/ │ 规则、状态契约、记录模板
+│   ├── scripts/ · tests/ · evals/     │   验证工具链（validate_package / 任务图 / 评估）
+│   └── adapters/ · bootstrap/ · plans/ │ 项目 Adapter 与验证计划
+│
+├── harness/                           ← 🧰 ② Harness 层资产（v2.6 并入）
+│   ├── AGENTS.md                      │   harness 触发时序规则
+│   ├── agents/                        │   env-agent / dev-agent（自定义 agent）
+│   ├── tools/                         │   validate.py / e2e_demo.py
+│   └── install.ps1                    │   同步到 ohmyagent 全局配置目录
+│
+├── references/                        ← 📖 资料库（只读）
+│   └── book/                          │   《深入理解 AI Agent》中文解析 + PDF
 │
 ├── configs/                           ← ⚙️ 各工具的预设配置
 │   ├── permissions.json               │   三级危险度权限模型（唯一事实源，v2.1 新增）
@@ -223,6 +268,22 @@ solo-dev-autopilot/
 | production-preflight | 上线前预检：覆盖率/CI/权限/可观测性/密钥/回滚 | `/skill production-preflight` |
 | troubleshoot | 根据错误信息自动排查原因 | `/skill troubleshoot <错误信息>` |
 | api-designer | 设计 API 接口并生成文档 | `/skill api-designer` |
+
+### 5️⃣ Harness 层 Skill（v2.6 并入，管环境与验证）
+
+| Skill | 用途 | 触发方式 |
+|-------|------|---------|
+| env-detect | 侦测技术栈与工具链 → 写 `.agentenv.json` | 「帮我看看这个项目」 |
+| env-setup | 补运行时/装依赖/.env/lint/git → 冒烟 | 「搭好环境」 |
+| project-scaffold | 从零建项目（6 套模板）→ 冒烟验证 | 「新建一个 XX 项目」 |
+| dev-loop | format→lint→typecheck→build→test，失败自修+熔断 | 改完代码/声称完成前 |
+| task-memory | 跨会话项目记忆（`.agent-memory/`） | 会话开始自动读/踩坑后写 |
+| harness-guard | 危险操作分级/密钥检查/覆盖保护 | 危险命令前自动 |
+| book-experiments | 跑《深入理解 AI Agent》94 个实验 | 「跑这本书的实验」 |
+
+### 6️⃣ 协议层（creating-forward/）
+
+不是 Skill，是纪律：需求基线（先说明白，再做明白）、任务图（有依赖/有完成标准/有验证方法）、证据验证（没有证据不算完成）、授权边界（用户离开不扩大授权）、中断恢复（以工作区文件为准，不依赖对话记忆）。入口：`creating-forward/START_HERE.md`。
 
 ## ⚙️ 配置模式（toy / team / production）
 

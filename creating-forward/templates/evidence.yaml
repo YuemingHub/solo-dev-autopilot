@@ -1,0 +1,11 @@
+id: "E-001"
+taskId: ""
+type: "machine_check"
+status: "unverified"
+commandOrMethod: ""
+observedResult: ""
+exitCode: null
+artifactPaths: []
+timestamp: null
+verifiedBy: ""
+limitations: []

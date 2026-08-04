@@ -1,0 +1,23 @@
+{
+  "runId": "",
+  "protocolVersion": "0.4.0-dev",
+  "taskCounts": {
+    "planned": 0,
+    "completed": 0,
+    "blocked": 0,
+    "failed": 0
+  },
+  "humanInterventions": {
+    "total": 0,
+    "necessary": 0,
+    "unnecessary": 0
+  },
+  "evidenceCoverage": 0,
+  "recoveryAccuracy": null,
+  "unauthorizedActions": 0,
+  "duplicateActions": 0,
+  "emptyLoopIterations": 0,
+  "contextReworkEvents": 0,
+  "verifierRejections": 0,
+  "coreCandidatesCreated": 0
+}

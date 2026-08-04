@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Creating Forward Task",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "goal",
+    "status",
+    "dependencies",
+    "completionCriteria",
+    "verificationMethods",
+    "allowedFiles",
+    "forbiddenActions",
+    "assignedRole",
+    "reviewRole"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "ready",
+        "in_progress",
+        "blocked",
+        "skipped",
+        "executed_pending_verification",
+        "verified",
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "completionCriteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verificationMethods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allowedFiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbiddenActions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assignedRole": {
+      "type": "string"
+    },
+    "reviewRole": {
+      "type": "string"
+    },
+    "attemptCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maxAttempts": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "evidenceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blockedBy": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "nextAction": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

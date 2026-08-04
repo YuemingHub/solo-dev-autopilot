@@ -1,0 +1,12 @@
+taskId: ""
+mission: ""
+task:
+  goal: ""
+  completionCriteria: []
+governingConstraints: []
+decisions: []
+relevantFiles: []
+dependencies: []
+exclusions: []
+authorization: {}
+knownRisks: []

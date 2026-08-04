@@ -1,0 +1,16 @@
+id: "T-001"
+title: ""
+goal: ""
+status: "pending"
+dependencies: []
+completionCriteria: []
+verificationMethods: []
+allowedFiles: []
+forbiddenActions: []
+assignedRole: "builder"
+reviewRole: "verifier"
+attemptCount: 0
+maxAttempts: 3
+evidenceIds: []
+blockedBy: []
+nextAction: ""

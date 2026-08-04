@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Creating Forward Project State",
+  "type": "object",
+  "required": [
+    "protocolVersion",
+    "projectId",
+    "adapters",
+    "schemaVersion",
+    "workspaceVersion",
+    "conformanceSuiteVersion",
+    "phase",
+    "presenceMode",
+    "delegationMode",
+    "requirementsStatus",
+    "authorizationProfile"
+  ],
+  "properties": {
+    "protocolVersion": {
+      "type": "string",
+      "const": "0.4.0-dev"
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapters": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "schemaVersion": {
+      "type": "string",
+      "const": "0.4.0-dev"
+    },
+    "workspaceVersion": {
+      "type": "string",
+      "const": "0.4.0-dev"
+    },
+    "conformanceSuiteVersion": {
+      "type": "string",
+      "const": "0.4.0-dev"
+    },
+    "phase": {
+      "enum": [
+        "idle",
+        "understanding",
+        "exploring",
+        "confirming",
+        "planning",
+        "executing",
+        "reviewing",
+        "delivering",
+        "complete",
+        "blocked",
+        "paused_for_human",
+        "cancelled"
+      ]
+    },
+    "presenceMode": {
+      "enum": [
+        "attended",
+        "away"
+      ]
+    },
+    "delegationMode": {
+      "enum": [
+        "advisory",
+        "supervised",
+        "delegated"
+      ]
+    },
+    "requirementsStatus": {
+      "enum": [
+        "draft",
+        "confirmed",
+        "changed",
+        "rejected"
+      ]
+    },
+    "currentTaskId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authorizationProfile": {
+      "type": "object",
+      "required": [
+        "workspaceWrite",
+        "commandExecution",
+        "networkAccess",
+        "externalMessaging",
+        "productionDeploy",
+        "paidActions",
+        "destructiveActions",
+        "sensitiveDataAccess"
+      ],
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    }
+  },
+  "additionalProperties": true
+}

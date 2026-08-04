@@ -1,0 +1,16 @@
+id: "PC-001"
+title: ""
+sourceObservationIds: []
+targetLayer: "core"
+problemStatement: ""
+proposedChange: ""
+whyNotAdapterOnly: ""
+affectedRules: []
+riskOfChange: []
+regressionScenarioIds: []
+counterexampleScenarioIds: []
+migrationRequired: false
+migrationNotes: ""
+status: "proposed"
+independentReview: null
+humanApproval: null

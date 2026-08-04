@@ -2,6 +2,34 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.6 — 三合一合并（2026-08-05）
+
+> 目标锚定：**中文新手 + 完整交付闭环 + 生产可用**。把 creating-forward（协议层）、agent-tool（harness 层）、solo-dev-autopilot（交付层）三个项目合并为一个仓库。
+
+### 新增
+
+- **① 协议层 `creating-forward/`**：完整迁入平台无关协作协议（需求基线/上下文包/任务图/执行循环/证据验证/授权边界/中断恢复），含 protocol/、schemas/、templates/、scripts/、tests/、evals/、adapters/、bootstrap/、plans/
+- **② Harness 层**：agent-tool 的 7 个 skill 升级为官方 SKILL.md 格式并入 `.claude/skills/`（env-detect / env-setup / project-scaffold / dev-loop / task-memory / harness-guard / book-experiments），agents/tools/AGENTS.md 归入 `harness/`
+- **根目录 `AGENTS.md`**：三合一统一运行契约（三层架构/触发时序/红线/9 步闭环/汇报风格）
+- **`references/book/`**：《深入理解 AI Agent》中文解析 Markdown + PDF（资料库）
+- **`harness/install.ps1`**：重写为相对路径版，一键同步到 ohmyagent 全局配置目录
+- **`harness/tools/validate.py`**：修复硬编码绝对路径，支持参数传入 base 目录
+
+### 变更
+
+- 官方 SKILL.md 从 **13 个 → 20 个**（新增 7 个 harness 层技能），平铺兼容层同步 20 个
+- README 重写架构图与核心价值表，新增三层架构章节
+- 版本号 2.5.1 → 2.6.0（plugin.json / marketplace.json）
+
+### 验证（2026-08-05，Windows 真机，Python 3.12.10）
+
+- `python creating-forward/scripts/validate_package.py` → PACKAGE VALIDATION: PASSED
+- `python creating-forward/scripts/validate_evals.py` → EVALUATION VALIDATION: PASSED（2 catalogs, 11 scenarios）
+- `python -m unittest discover -s creating-forward/tests` → Ran 60 tests, OK
+- `python scripts/sync-skills.py --check` → 20 个官方 Skill 与平铺兼容层一致
+- 官方 SKILL.md 20 个 = 平铺兼容层 20 个 ✅
+- harness/agents/*.json 全部可解析 ✅
+
 ## v2.5.1 — 第 3 轮回响（2026-08-04）
 
 ### 新增

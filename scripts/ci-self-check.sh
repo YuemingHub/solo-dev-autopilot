@@ -106,6 +106,27 @@ else
   fi
 fi
 
+echo "=== 5. 协议层校验（creating-forward 包结构 + 单测） ==="
+if command -v python3 >/dev/null 2>&1; then
+  if python3 creating-forward/scripts/validate_package.py; then
+    ok "协议层 validate_package"
+  else
+    bad "协议层 validate_package 失败"
+  fi
+  if python3 creating-forward/scripts/validate_evals.py; then
+    ok "协议层 validate_evals"
+  else
+    bad "协议层 validate_evals 失败"
+  fi
+  if python3 -m unittest discover -s creating-forward/tests 2>/dev/null; then
+    ok "协议层 unittest"
+  else
+    bad "协议层 unittest 失败"
+  fi
+else
+  bad "python3 不可用，无法校验协议层"
+fi
+
 echo ""
 echo "结果: $pass 通过 / $fail 失败"
 [ "$fail" -eq 0 ] || exit 1

@@ -16,7 +16,7 @@
 | **Reasonix** | 🟡 社区适配中 | 通过 skills 目录引用 | `.reasonix/skills/` | 可用 |
 | **Windsurf** | 🟡 社区适配中 | 通过 rules 引用 | `.windsurf/rules/` | 可用 |
 
-> 判断标准：能否**原生自动加载** 13 个 SKILL.md。Claude Code 官方格式全兼容，
+> 判断标准：能否**原生自动加载** 20 个 SKILL.md。Claude Code 官方格式全兼容，
 > 其他工具需要手动把 skill 内容转为自己的规则格式（转换器见各工具小节）。
 
 ---
@@ -49,7 +49,7 @@ npm install -g @anthropic-ai/claude-code
 
 # 进入项目后确认 Skill 被识别
 claude
-# 输入 /skill 应看到 13 个 Skill（api-designer ~ troubleshoot）
+# 输入 /skill 应看到 20 个 Skill（api-designer ~ troubleshoot + env-detect ~ book-experiments）
 ```
 
 ### 权限合并（关键）
@@ -84,7 +84,7 @@ cat ~/.claude/settings.json
 ### 验证
 
 ```bash
-# 1. /skill 能看到 13 个 Skill
+# 1. /skill 能看到 20 个 Skill
 # 2. 说"生成代码地图" → context-map 运行
 # 3. 说"能部署了吗" → deploy-gate 输出部署确认单（人工确认红线）
 ```
@@ -93,7 +93,7 @@ cat ~/.claude/settings.json
 
 ## 1.5 Codex（✅ 全适配）
 
-见 [codex-setup.md](codex-setup.md)：用 AGENTS.md 指令承载三级权限模型，`.codex/skills/` 加载 13 个 Skill；无需插件市场，不强制安装 superpowers（由 13 个 Skill + 9 步闭环承担方法论）。
+见 [codex-setup.md](codex-setup.md)：用 AGENTS.md 指令承载三级权限模型，`.codex/skills/` 加载 20 个 Skill；无需插件市场，不强制安装 superpowers（由 20 个 Skill + 9 步闭环承担方法论）。
 
 ---
 
@@ -108,7 +108,7 @@ cat ~/.claude/settings.json
 
 ### 注意
 
-- Cursor 的 Rules 是**全局生效**的，不适合塞 13 个完整 Skill
+- Cursor 的 Rules 是**全局生效**的，不适合塞 20 个完整 Skill
 - 建议只转 2-3 个核心：context-map（代码地图）、troubleshoot（排错）、commit-helper（提交）
 - 权限模型（permissions.json）在 Cursor 中需手动在 Settings → Security 配置
 
@@ -194,7 +194,7 @@ bash scripts/install-git-hooks.sh      # 或 install-git-hooks.ps1
 
 | 问题 | 解决 |
 |------|------|
-| 其他工具能自动加载 13 个 Skill 吗？ | 不能。只有 Claude Code 原生支持官方 SKILL.md，其他工具需手动转换 |
+| 其他工具能自动加载 20 个 Skill 吗？ | 不能。只有 Claude Code 原生支持官方 SKILL.md，其他工具需手动转换 |
 | 权限模型在其他工具生效吗？ | 不完全。Claude Code 原生支持 permissions.json，其他工具需在各自设置里配置 |
 | 一定要用 Claude Code 吗？ | 不用。工具无关设计，但体验最佳的是 Claude Code（全适配） |
 | superpowers 是必须的吗？ | 建议装（方法论底座），不装也能用我们的 Skill，只是少了 brainstorm/plan/TDD 流程 |

@@ -1,0 +1,33 @@
+protocolVersion: "0.4.0-dev"
+projectId: ""
+adapters: []
+schemaVersion: "0.4.0-dev"
+workspaceVersion: "0.4.0-dev"
+conformanceSuiteVersion: "0.4.0-dev"
+phase: "idle"
+presenceMode: "attended"
+delegationMode: "supervised"
+requirementsStatus: "draft"
+currentTaskId: null
+readyTaskIds: []
+blockedTaskIds: []
+completedTaskIds: []
+nextAction: "Confirm requirements and plan the first task"
+lastCheckpoint: null
+runId: null
+authorizationProfile:
+  workspaceWrite: true
+  commandExecution: true
+  networkAccess: true
+  externalMessaging: false
+  productionDeploy: false
+  paidActions: false
+  destructiveActions: false
+  sensitiveDataAccess: false
+budgets:
+  maxAttemptsPerTask: 3
+  maxConsecutiveSameFailure: 2
+  maxDerivedRepairTasks: 2
+  maxParallelBuilders: 2
+  externalCostBudgetCny: 0
+updatedAt: null
