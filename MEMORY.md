@@ -28,6 +28,14 @@
 4. understanding 仓库严禁放真实家庭数据、密钥、.env、聊天记录
 5. 开发走 `codex/<task>` 分支；正式发布只走 production 分支或 release-* 标签
 
+## 当前进度（2026-08-04）
+
+- **试点第 1 轮完成（2026-08-04）**：Mingos 运行态产物解除跟踪收尾。
+  - 候选任务大部分已在 ad17094 完成（agent/chats/jobs 解除跟踪）；
+  - 本轮补齐剩余：`reports/flywheel/` 53 个 session JSON `git rm --cached`，分支 `codex/fix-flywheel-untrack-v2`，Draft PR #110；
+  - 发现旧分支 #109 混删活源码 `test-llm-fallback.js`（被 `test:llm-fallback` 引用），未沿用，建议关闭 #109；
+  - understanding 仓库已记录（PROJECT_STATE.md 决策表），方法教训沉淀至 `memory/2026-08-04.md`。
+
 ## 当前进度（2026-08-03）
 
 - **Step 0（git 打通）✅ 完成**：
@@ -40,9 +48,9 @@
 - **发现 2（缺口）**：`UNDERSTANDING_INDEX.md` 不在远程 production 树里（理解仓库 README 声称主项目有该索引）
 - **发现 3**：production 自带 17 个 .claude/skills + 2 个 CI workflow + AGENTS.md 自主契约（可自主做到 Draft PR）；autopilot 安装应以流程整合为主，避免整包复制冲突
 
-## 候选首个试点任务（待用户确认）
+## 候选首个试点任务（已完成，2026-08-04）
 
-「修复 .gitignore 编码为 UTF-8 + 采用本地 117 行新版 + `git rm --cached` 解除 63 个误跟踪运行时文件」→ 走 codex/<task> 分支 + Draft PR，完整跑一遍 9 步闭环
+「修复 .gitignore 编码为 UTF-8 + 采用本地 117 行新版 + `git rm --cached` 解除 63 个误跟踪运行时文件」——已大部分完成：agent/chats/jobs 已解除（ad17094），flywheel 53 个已解除（PR #110）；剩余 knowledge/fki/compiled 是否入库需按知识治理决策，不沿用 #109 一并删除。
 
 ---
 
