@@ -913,6 +913,24 @@ git rm --cached <file>          # 误跟踪的密钥文件解除跟踪（磁盘�
 
 ---
 
+### 坑 32：npm 写操作会替换 node_modules junction，多 worktree 共享依赖被拆散
+
+**现象**：用 Junction 复用主工作区 node_modules 的 worktree 里跑测试没问题；一旦在该 worktree 执行
+`npm audit fix` / `npm install` / `npm ci`，junction 被 npm 替换成真实目录，依赖残缺
+（如 `Cannot find module 'axios'`），测试崩
+
+**原因**：npm 安装流程会先删后建 `node_modules`，junction 被当成普通目录删除重建，共享失效
+
+**解决**（三仓联动第 3 轮实测）：
+1. 共享依赖的 worktree **只跑测试，不跑任何 npm 写操作**；`npm audit fix` 用 `--package-lock-only` 或回主工作区执行
+2. 需要完整安装时，在独立目录 `npm ci`，不跨 worktree 共享
+3. 万一被替换：先验证残缺目录路径在 worktree 内（`Resolve-Path`），删除后重建 junction；主工作区 node_modules 通常完好，不受影响
+
+**预防**：建 worktree 时记录 node_modules 来源；任何 npm 写操作前先确认 `node_modules` 是否 junction
+（Windows：`Get-Item node_modules | Select LinkType,Target`）
+
+---
+
 ## 7. 心态与方法论
 
 ### 坑 18：完美主义瘫痪

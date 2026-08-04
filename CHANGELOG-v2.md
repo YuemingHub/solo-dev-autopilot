@@ -2,6 +2,18 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.5.1 — 第 3 轮回响（2026-08-04）
+
+### 新增
+
+- **newbie-pitfalls.md 坑 32**：npm 写操作会替换 node_modules junction，多 worktree 共享依赖被拆散
+  （三仓联动第 3 轮实测：`npm audit fix` 把共享 junction 替换成残缺真实目录，`Cannot find module 'axios'`；
+  解决 = worktree 只跑测试、npm 写操作回主工作区或 `--package-lock-only`、被替换后删除残缺目录重建 junction）
+
+### 说明
+
+- 补丁级更新，2.5 系列内；无破坏性变更
+
 ## v2.5 — 第 2 轮回响固化（2026-08-04）
 
 > 三仓库联动第 2 轮（Ming-os 安全越界修复 + 三轨并行）跑完后，把 6 个新坑与多 Agent 协作规范固化进仓库。
