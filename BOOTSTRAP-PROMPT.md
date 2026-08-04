@@ -2,6 +2,8 @@
 
 > 打开 AI IDE → 打开本仓库 → 粘贴下面这段 → AI 从第一句就开始引导你，全程你只需要回答它的问题
 
+> **Codex 用户**：无需插件市场安装 superpowers，按 `docs/codex-setup.md` 接入；三仓库 9 步闭环见 `docs/closed-loop.md`。
+
 ---
 
 ## 复制这段
@@ -26,6 +28,7 @@ B. 继续开发一个已有项目（这个仓库或其他项目）
 - troubleshoot：新手报错自动排查
 - fullstack-scaffold：一键生成全栈项目骨架
 - onboarding：首次使用引导（含 superpowers 安装）
+- closed-loop：三仓库联动 9 步闭环（进度→地图→规划→开发→验证→审查→提交→记录→回响）
 - superpowers（上游底座）：brainstorm→plan→TDD→review→finish，由 AI 自动调用
 
 开始吧，先问我第一个问题。

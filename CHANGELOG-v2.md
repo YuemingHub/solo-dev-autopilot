@@ -2,6 +2,22 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.4 — 三仓库联动固化批次（2026-08-04）
+
+> 用真实项目（Ming-os）跑完第 1 轮 9 步闭环后，把实战经验固化进仓库。
+
+### 新增
+
+- **Codex 适配**：`configs/tool-presets/codex.json`（三级模式 → Codex 沙箱/AGENTS.md 映射）+ `docs/codex-setup.md`（两种接入方式 + 已知差异）；README 适用工具表/结构树/架构图同步
+- **`docs/closed-loop.md`**：三仓库联动 9 步闭环正式文档（进度→地图→规划→开发→验证→审查→提交→记录→回响；角色/档位/红线/粒度）
+- **newbie-pitfalls.md 增补坑 20-25**：PowerShell 5.1 中文 commit、GitHub 大包/代理、partial clone + `gc.auto=0`、UTF-16 .gitignore、终端乱码与存储乱码区分、Windows `python` 占位符
+
+### 验证
+
+- `configs/tool-presets/*.json` 全部 JSON 解析通过（ci-self-check 第 1 段 glob 自动覆盖新增 codex.json）
+- README 结构树与实际文件一致；无 `YOUR_USERNAME` 等占位符残留
+- 本批次由 Codex 会话按 9 步闭环执行（第 1 轮实战反馈落地）
+
 ## v2.3.3 — 复核修复批次（2026-08-03）
 
 > 对仓库做独立复核，修复 3 处残留，补上 Skill 兼容层同步机制，防止双格式漂移。

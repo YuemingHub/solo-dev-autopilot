@@ -19,9 +19,10 @@
 
 ## 🎯 适用工具
 
-v2 优先 **Claude Code 全适配**（官方 SKILL.md + 插件市场原生支持），其他工具标注"社区适配中"：
+v2 优先 **Claude Code 全适配**（官方 SKILL.md + 插件市场原生支持）与 **Codex 全适配**（AGENTS.md + `.codex/skills/`，见 [docs/codex-setup.md](docs/codex-setup.md)），其他工具标注"社区适配中"：
 
 - **Claude Code** ✅ 全适配 (`.claude/skills/` + 插件市场注册)
+- **Codex** ✅ 全适配（AGENTS.md + `.codex/skills/`，[docs/codex-setup.md](docs/codex-setup.md)）
 - **Cursor** 🟡 社区适配中 (`.cursor/rules/`)
 - **Cline** 🟡 社区适配中 (`.cline/`)
 - **Reasonix** 🟡 社区适配中 (`.reasonix/skills/`)
@@ -46,6 +47,7 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 
 # 3. 在 Claude Code 里安装上游方法论（脚本会引导你，或手动执行）：
 #    /plugin install superpowers@claude-plugins-official
+#    Codex 用户跳过本步，按 docs/codex-setup.md 接入；三仓库 9 步闭环见 docs/closed-loop.md
 
 # 4. 把这个目录作为你的项目根目录开始开发
 # 或者把 .claude/skills/ 和 templates/ 复制到已有项目中
@@ -67,8 +69,8 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
                 │ 注入上下文（记忆/代码地图）        │ 自动化执行（质量门）
 ┌───────────────▼──────────────────┐   ┌───────────▼──────────────────┐
 │      AI 编程工具（任选其一）       │   │     Git Hooks + CI           │
-│  Claude Code · Cursor · Cline    │   │  pre-commit：P0 阻止提交      │
-│  Reasonix · Windsurf · 其他      │   │  pre-push：推送前审查提醒     │
+│  Claude Code · Codex · Cursor    │   │  pre-commit：P0 阻止提交      │
+│  Cline · Reasonix · Windsurf     │   │  pre-push：推送前审查提醒     │
 └───────────────┬──────────────────┘   │  GitHub Actions：lint→test    │
                 │ 读取                    │  →build→审计→密钥扫描        │
                 │                       └──────────────────────────────┘
@@ -128,7 +130,8 @@ solo-dev-autopilot/
 │       ├── claude-code.json          │   三级权限 + MCP + skillsPath
 │       ├── cursor.json               │
 │       ├── cline.json                │
-│       └── reasonix.json             │   三级权限 + hooks
+│       ├── reasonix.json             │   三级权限 + hooks
+│       └── codex.json                │   Codex 适配（AGENTS.md + 沙箱映射，v2.4 新增）
 │
 ├── scripts/                           ← 🔧 自动化脚本
 │   ├── setup.sh / setup.ps1          │   一键安装（macOS/Linux/Windows + 模式选择）
@@ -151,6 +154,8 @@ solo-dev-autopilot/
 │   ├── BLUEPRINT-v2.md               │   v2 开发蓝图（14 章 + 附录）
 │   ├── getting-started.md            │   详细入门指南（三步开始）
 │   ├── tool-setup.md                 │   各 AI 工具安装引导（v2.3 新增）
+│   ├── codex-setup.md                │   Codex 接入指南（v2.4 新增）
+│   ├── closed-loop.md                │   三仓库联动 9 步闭环（v2.4 新增）
 │   ├── scoring.md                    │   评分维度表 8 维加权（v2.3 新增）
 │   ├── verification.md              │   验证记录：所有实测证据可复现（v2.3.2 新增）
 │   ├── EVOLVE_CHANGELOG.md          │   自动进化变更记录（v2.3.3 补齐）
@@ -304,7 +309,7 @@ solo-dev-autopilot/
 - 新手避坑案例（你踩过的坑）
 - 技术栈模板（其他语言/框架组合）
 
-详见 [getting-started.md](docs/getting-started.md)
+详见 [getting-started.md](docs/getting-started.md)、[codex-setup.md](docs/codex-setup.md)、[closed-loop.md](docs/closed-loop.md)
 
 ## 📄 License
 

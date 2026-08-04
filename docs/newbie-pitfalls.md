@@ -668,6 +668,83 @@ AI 会分析冲突并给出合并方案。
 **预防**：经常提交和拉取，减少大冲突的概率
 
 ---
+### 坑 20：PowerShell 5.1 中文 commit 消息变成 `?`
+
+**现象**：`git commit -m "修复xxx"` 提交后，commit message 显示为 `?????`
+
+**原因**：PowerShell 5.1 向 git 传中文参数时按系统代码页编码，git 存成乱码
+
+**解决**：
+```powershell
+# 用 UTF-8 无 BOM 文件传消息
+git commit -F .commit-msg.tmp   # 文件内容为 UTF-8 无 BOM 的中文消息
+```
+
+**预防**：写一个 `commit-msg.tmp` 模板，或让 AI 统一用 `-F` 传消息（2026-08-04 三仓库联动实测沉淀）
+
+---
+
+### 坑 21：GitHub 大仓库传输卡死（国内网络）
+
+**现象**：`git clone` / `git push` 大包时长时间无响应，或报 `early EOF`
+
+**原因**：国内到 GitHub 的链路对大包不稳定
+
+**解决**：
+```bash
+git -c http.proxy=http://127.0.0.1:7890 push origin <branch>   # 走本地代理
+# 或浅拉取 + 重试循环：git clone --depth 1 <url>
+```
+
+**预防**：clone 用 `--depth 1`；push 失败先试代理
+
+---
+
+### 坑 22：partial clone（blob:none）提交时读 blob 失败
+
+**现象**：commit 触发 repack 时报 `fatal: unable to read <blob>` 或 promisor remote 错误
+
+**原因**：blob 按需懒加载，网络不稳时 repack 读不到缺失 blob
+
+**解决**：
+```bash
+git config gc.auto 0          # 关闭自动 repack
+git add -A                    # 用本地文件重建 blob
+```
+
+**预防**：网络不稳的环境禁用自动 gc；不要手动 `git gc`
+
+---
+
+### 坑 23：UTF-16 编码的 .gitignore 让忽略规则失效
+
+**现象**：`.gitignore` 里写了规则，但运行时文件仍被 git 跟踪
+
+**原因**：文件是 UTF-16 LE（Windows 记事本旧版默认），git 读不懂 → 规则全部失效
+
+**解决**：把 `.gitignore` 转成 UTF-8（无 BOM），再用 `git rm --cached` 解除误跟踪文件（磁盘文件保留）
+
+---
+
+### 坑 24：终端显示乱码 ≠ 文件存储乱码
+
+**现象**：PowerShell 里 `git log` 中文显示乱码，以为提交存坏了
+
+**原因**：显示层编码问题，存储层其实是 UTF-8
+
+**解决**：用 `cmd /c "git log"` 或把输出重定向到文件再查看，验证存储层编码正常
+
+---
+
+### 坑 25：Windows 上 `python` 是 Microsoft Store 占位符
+
+**现象**：`python --version` 弹出商店，或 `python` 命令行为异常
+
+**原因**：WindowsApps 的 python.exe 是占位符，不是真实解释器
+
+**解决**：用 `py --version`，或安装官方 Python 并勾选 Add to PATH
+
+---
 ## 6. AI 协作常见问题
 
 ### 坑 15：AI 不知道项目上下文

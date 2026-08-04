@@ -1,0 +1,51 @@
+{
+  "_comment": "Codex（OpenAI 桌面版 / CLI）适配配置。Codex 没有 Claude Code 的按命令权限表，三级危险度模型映射为 AGENTS.md 指令 + 沙箱模式；权限唯一事实源为 configs/permissions.json",
+  "_usage": "1) 把 agentsMd 片段并入项目 AGENTS.md；2) 按 docs/codex-setup.md 加载 skills；3) 模式选择见 modes",
+  "modes": {
+    "toy": {
+      "sandbox": "workspace-write",
+      "note": "学习档：项目内读写自动放行，pre-commit 仅警告不阻止"
+    },
+    "team": {
+      "sandbox": "workspace-write",
+      "note": "正常开发档：P0 阻止提交、pre-push 提醒"
+    },
+    "production": {
+      "sandbox": "workspace-write + require_escalated（发布类）",
+      "note": "生产档：部署/密钥/真实数据/合并 production 必须人工拍板，红线写进 AGENTS.md"
+    }
+  },
+  "agentsMd": [
+    "# Solo Dev Autopilot（Codex 适配）",
+    "1. 进场先读 CODEMAP.md、PROJECT-MEMORY.md、SESSION_DRIVER.md（缺失则按 templates/ 生成）。",
+    "2. 开发走 codex/<task> 分支；提交前跑 code-review（P0-P3），推送前跑 CI/测试门禁。",
+    "3. 发布类操作（合并 production、创建 release 标签、部署服务器、改密钥/环境/真实数据）必须先向用户确认；未经批准不得执行。",
+    "4. 中文 commit 消息用 `git commit -F <UTF-8无BOM文件>`（Windows PowerShell 5.1 的 -m 中文参数会变 ?）。",
+    "5. 每次重要开发结束：更新项目记忆与理解仓库（三仓库 9 步闭环见 docs/closed-loop.md）。"
+  ],
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": { "POSTGRES_CONNECTION_STRING": "${DATABASE_URL}" }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${PROJECT_ROOT}"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  },
+  "skills": {
+    "source": ".claude/skills/<name>/SKILL.md（官方格式，唯一事实源）",
+    "loading": "Codex 支持 .codex/skills/<name>/SKILL.md：把 13 个 skill 复制到项目 .codex/skills/，或直接以本仓库为项目根目录读取。详见 docs/codex-setup.md",
+    "sync": "社区平铺兼容层 skills/<name>.md 由 scripts/sync-skills.py 单向同步，不要手改平铺层"
+  }
+}

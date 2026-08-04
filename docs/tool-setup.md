@@ -91,6 +91,12 @@ cat ~/.claude/settings.json
 
 ---
 
+## 1.5 Codex（✅ 全适配）
+
+见 [codex-setup.md](codex-setup.md)：用 AGENTS.md 指令承载三级权限模型，`.codex/skills/` 加载 13 个 Skill；无需插件市场，不强制安装 superpowers（由 13 个 Skill + 9 步闭环承担方法论）。
+
+---
+
 ## 2. Cursor（🟡 社区适配中）
 
 ### 安装
