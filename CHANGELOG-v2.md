@@ -2,6 +2,28 @@
 
 > **2026-08-03** — Phase 1 兼容性改造完成。重大版本升级，不兼容 v1.x。
 
+## v2.5 — 第 2 轮回响固化（2026-08-04）
+
+> 三仓库联动第 2 轮（Ming-os 安全越界修复 + 三轨并行）跑完后，把 6 个新坑与多 Agent 协作规范固化进仓库。
+
+### 新增
+
+- **newbie-pitfalls.md 坑 26-31**：
+  - 坑 26 `git fetch` 定向拉分支防超时（全量拉取 34s+ 超时 vs 定向 4.7s）；
+  - 坑 27 gh CLI 在 PowerShell 传中文/特殊字符 → 文案落盘 + `--body-file`；
+  - 坑 28 Draft PR 基线漂移 → push 前 rebase + `git diff origin/production...HEAD --stat` 验证；
+  - 坑 29 PowerShell 读 UTF-8 文件加 `-Encoding UTF8`（显示乱码 ≠ 存储损坏）；
+  - 坑 30 密钥/凭据脚本不入库，先 `git status --porcelain` + `git ls-files` 扫描；
+  - 坑 31 多 Agent 共享工作区协作规范（分支所有权 / 状态单一事实源 / 动工前检查 / 合并权归用户）
+- **docs/closed-loop.md**：新增「实战回响记录」章节（第 1/2 轮）；第 7 步补 rebase 验证、第 8 步补多轨状态认领/回填
+- TOC 同步新增「6.5 多 Agent 并行协作」
+
+### 验证
+
+- 全部 JSON 配置解析通过（node v22）
+- CI（ci-self-check.sh）由 GitHub Actions 在 PR 上自动运行
+- 本批次由 Codex 按 9 步闭环执行（第 2 轮实战反馈落地）
+
 ## v2.4 — 三仓库联动固化批次（2026-08-04）
 
 > 用真实项目（Ming-os）跑完第 1 轮 9 步闭环后，把实战经验固化进仓库。

@@ -14,6 +14,7 @@
 - [数据库](#4-数据库)
 - [Git 与版本控制](#5-git-与版本控制)
 - [AI 协作常见问题](#6-ai-协作常见问题)
+- [多 Agent 并行协作](#65-多-agent-并行协作)
 - [心态与方法论](#7-心态与方法论)
 
 ---
@@ -745,6 +746,91 @@ git add -A                    # 用本地文件重建 blob
 **解决**：用 `py --version`，或安装官方 Python 并勾选 Add to PATH
 
 ---
+
+### 坑 26：`git fetch` 全量拉取超时，定向拉分支秒过
+
+**现象**：`git fetch origin` 长时间无响应或超时（大仓库/网络不稳），但 `git fetch origin <branch>` 很快完成
+
+**原因**：全量 fetch 要拉所有分支的增量；国内到 GitHub 的大包传输不稳定
+
+**解决**：
+```powershell
+git fetch origin production --quiet   # 只拉目标分支，几十秒内完成
+git fetch origin --prune              # 网络好时再全量
+# 或走本地代理
+git -c http.proxy=http://127.0.0.1:7890 fetch origin production
+```
+
+**预防**：只关心"某个分支当前状态"时永远定向 fetch；CI / rebase 前只 fetch 目标分支
+
+**实测**：2026-08-04 三仓库联动第 2 轮，Ming-os `git fetch origin` 超时 34s+，`git fetch origin production` 4.7s 完成
+
+---
+
+### 坑 27：gh CLI 在 PowerShell 传中文/特殊字符参数（引号坑）
+
+**现象**：`gh pr create --title "..." --body "..."` 里出现中文、`$`、反引号、`|`、括号时，title/body 错乱或命令报错
+
+**原因**：PowerShell 对引号、`$()`、反引号有自己的解析规则；5.1 还叠加系统代码页编码问题，直接传参的中文会变 `?`
+
+**解决**：一律用文件传参
+```powershell
+# 先落盘 UTF-8 文件（无 BOM），再引用
+gh pr create --draft --title (Get-Content -Encoding UTF8 .pr-title.tmp) --body-file .pr-body.md
+```
+
+**预防**：PR 文案先写进 `-Encoding UTF8` 读取的临时文件，再用 `--body-file`；标题含中文也走文件，或保持 ASCII 前缀
+
+---
+
+### 坑 28：Draft PR 基线漂移——不 rebase 就推，diff 会"反向删除"新代码
+
+**现象**：基于旧 production 的分支推到新 production 后，PR diff 里出现大量"删除"新提交文件的假象（例如把别人的 CSP 修复显示成被删掉）
+
+**原因**：PR diff = 分支相对目标分支的差异；基线旧 → 目标分支新提交的文件在本分支"不存在"→ 显示为删除
+
+**解决**：推送前先 rebase + 验证
+```powershell
+git fetch origin production --quiet
+git rebase origin/production
+git diff origin/production...HEAD --stat   # 确认 diff 只剩本任务文件
+```
+
+**预防**：任何跨天/跨合并的分支，push 前必做 rebase + diff 验证；Draft PR 打开后第一件事看 diff 是否符合预期
+
+---
+
+### 坑 29：PowerShell 读 UTF-8 文件不加 `-Encoding UTF8`，中文全变乱码
+
+**现象**：`Get-Content docs/xxx.md` 输出全是 `馃殌` 之类乱码，以为文件损坏
+
+**原因**：PowerShell 5.1 默认按系统代码页（GBK）解码 UTF-8 文件；显示层乱码 ≠ 存储层损坏
+
+**解决**：
+```powershell
+Get-Content -Encoding UTF8 docs/xxx.md
+```
+
+**预防**：Windows 上读任何中文 md / json / 脚本默认带 `-Encoding UTF8`；看到乱码先查编码，别下"文件坏了"的结论
+
+---
+
+### 坑 30：密钥/凭据脚本不入库——先查跟踪再动工作树
+
+**现象**：脚本/配置文件里出现真实 key、token、密码；或 `git add .` 把含密钥文件一起提交
+
+**原因**：.gitignore 规则不全、历史已跟踪文件不会自动解除跟踪、或手滑 `git add .`
+
+**解决**：
+```powershell
+git status --porcelain          # 动工作树前先确认哪些文件被跟踪/改动
+git ls-files | Select-String -Pattern '\.env|key|secret|token'   # 扫描已跟踪的敏感文件
+git rm --cached <file>          # 误跟踪的密钥文件解除跟踪（磁盘文件保留）
+```
+
+**预防**：.gitignore 必须覆盖 `.env*`、`*.key`、`*secret*`、`*token*`；仓库 CI 配密钥扫描；agent 在含密钥的仓库里工作前先 `git status --porcelain`
+
+---
 ## 6. AI 协作常见问题
 
 ### 坑 15：AI 不知道项目上下文
@@ -806,6 +892,24 @@ git add -A                    # 用本地文件重建 blob
 ```
 
 **预防**：在 PROJECT-MEMORY.md 中注明"MVP 阶段，优先简洁"。
+
+---
+
+## 6.5. 多 Agent 并行协作
+
+### 坑 31：多 Agent 共享同一工作区，互相踩踏
+
+**现象**：两个 agent 同时改同一个仓库/工作树，提交互相覆盖、分支错乱、状态卡打架
+
+**原因**：多 agent 并行时缺少"文件级所有权"和"状态同步"约定，各自以为自己在独占工作区
+
+**解决**（三仓联动第 2 轮实测规范）：
+1. **分支所有权**：每条轨只动自己的 `codex/<task>` 分支；不 checkout 别人的分支；production / main 只读
+2. **动工前检查**：`git status --porcelain` 必须干净；工作树被别人占用时先沟通，不硬抢
+3. **状态单一事实源**：理解仓库 `PROJECT_STATE.md` 是跨轨状态记录点，各自完成后回填，不靠口头/聊天传状态
+4. **合并权归属用户**：所有 Draft PR 合入由用户拍板；agent 之间不互相合分支、不互相 push
+
+**预防**：每条轨启动前读 `PROJECT_STATE.md` 的"并行中"清单，认领自己的任务并打标记；跨轨需要协调时通过父代理或状态卡，不直接改对方分支
 
 ---
 
